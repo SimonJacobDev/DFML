@@ -3,6 +3,7 @@ torchaudio
 librosa
 soundfile
 flask
+flask_sqlalchemy
 gunicorn
 torch
 torchvision
