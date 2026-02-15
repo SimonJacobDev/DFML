@@ -17,8 +17,8 @@ transformers
 librosa
 soundfile
 
-# Image processing
-Pillow==10.1.0
+# Image processing - UPDATED to work with Python 3.14
+Pillow>=11.0.0
 opencv-python==4.8.1.78
 
 # Data science
