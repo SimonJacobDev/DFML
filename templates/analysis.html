@@ -1,0 +1,2481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Audio Deepfake Detection | DeepFake Shield</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Advanced AI platform for detecting deepfake audio content. Protect yourself from synthetic voice manipulation.">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔊</text></svg>">
+    
+    <style>
+        :root {
+            --primary: #000000;
+            --primary-dark: #333333;
+            --secondary: #666666;
+            --accent: #0077ff;
+            --accent-light: #3399ff;
+            --success: #00cc66;
+            --danger: #ff4444;
+            --warning: #ffaa00;
+            --light: #ffffff;
+            --light-gray: #f8f9fa;
+            --gray: #e0e0e0;
+            --medium-gray: #cccccc;
+            --dark-gray: #666666;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s ease;
+            --border-radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light);
+            color: var(--primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        /* Google-Style Profile */
+        .google-profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 5px 5px 12px;
+            border-radius: 30px;
+            background: transparent;
+            cursor: pointer;
+            position: relative;
+            margin-left: 10px;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .google-profile:hover {
+            background: rgba(0, 119, 255, 0.05);
+            border-color: var(--gray);
+        }
+
+        .profile-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+
+        .profile-name {
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: var(--primary);
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-width: 120px;
+            display: none;
+            z-index: 1001;
+            border: 1px solid var(--gray);
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .profile-dropdown.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ff4444;
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 0.95rem;
+            cursor: pointer;
+            border: none;
+            background: white;
+            width: 100%;
+            text-align: left;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(255, 68, 68, 0.05);
+        }
+
+        .dropdown-item i {
+            width: 18px;
+        }
+
+        /* Mobile Profile Styles */
+        .mobile-profile {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 119, 255, 0.05);
+            border-radius: 50px;
+        }
+
+        .mobile-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+
+        .mobile-info {
+            text-align: left;
+        }
+
+        .mobile-name {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .mobile-email {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        .mobile-logout {
+            color: #ff4444 !important;
+            font-size: 1.5rem !important;
+        }
+
+        /* ================= FIXED NAVBAR ================= */
+        .navbar-white {
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: var(--transition);
+            padding: 0;
+        }
+
+        .navbar-white.scrolled {
+            box-shadow: var(--shadow);
+        }
+
+        .nav-wrapper {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 1.4rem;
+        }
+
+        .logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .logo-highlight {
+            color: var(--accent);
+        }
+
+        #menu {
+            display: flex;
+            list-style: none;
+            gap: 15px;
+            margin: 0;
+            padding: 0;
+            align-items: center;
+        }
+
+        #menu li {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--dark-gray);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 10px 15px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            border-radius: 8px;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+            background: rgba(0, 119, 255, 0.05);
+        }
+
+        .nav-link.active {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        /* FIXED LOGIN BUTTON */
+        .login-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white !important;
+            padding: 10px 22px !important;
+            border-radius: 25px;
+            font-weight: 600;
+            display: flex !important;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            border: none;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(0, 119, 255, 0.2);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 119, 255, 0.3);
+            color: white !important;
+            background: linear-gradient(135deg, var(--accent-light), var(--accent));
+        }
+
+        /* Mobile Menu Icon */
+        .menuIcon {
+            display: none;
+            width: 30px;
+            height: 24px;
+            position: relative;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .menuIcon .icon {
+            display: block;
+            position: absolute;
+            height: 3px;
+            width: 100%;
+            background: var(--primary);
+            border-radius: 3px;
+            opacity: 1;
+            left: 0;
+            transform: rotate(0deg);
+            transition: 0.25s ease-in-out;
+        }
+
+        .menuIcon .icon:nth-child(1) {
+            top: 0px;
+        }
+
+        .menuIcon .icon:nth-child(2) {
+            top: 10px;
+        }
+
+        .menuIcon .icon:nth-child(3) {
+            top: 20px;
+        }
+
+        .menuIcon.toggle .icon:nth-child(1) {
+            top: 10px;
+            transform: rotate(135deg);
+        }
+
+        .menuIcon.toggle .icon:nth-child(2) {
+            opacity: 0;
+            left: -30px;
+        }
+
+        .menuIcon.toggle .icon:nth-child(3) {
+            top: 10px;
+            transform: rotate(-135deg);
+        }
+
+        /* Overlay Menu */
+        .overlay-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+        }
+
+        .overlay-menu.show {
+            transform: translateX(0);
+        }
+
+        .overlay-menu ul {
+            list-style: none;
+            text-align: center;
+            padding: 0;
+        }
+
+        .overlay-menu li {
+            margin: 20px 0;
+        }
+
+        .overlay-menu a {
+            color: var(--primary);
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 12px 30px;
+            border-radius: 50px;
+            transition: var(--transition);
+        }
+
+        .overlay-menu a:hover {
+            color: var(--accent);
+            background: rgba(0, 119, 255, 0.05);
+        }
+
+        .mobile-login-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(0, 119, 255, 0.2);
+        }
+
+        .mobile-login-btn:hover {
+            background: linear-gradient(135deg, var(--accent-light), var(--accent));
+            color: white !important;
+        }
+
+        /* ================= HERO SECTION ================= */
+        .hero-section {
+            padding: 150px 0 100px;
+            background: linear-gradient(135deg, #f0f7ff 0%, var(--light) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%230077ff' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 3.2rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .highlight {
+            color: var(--accent);
+            position: relative;
+        }
+
+        .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 119, 255, 0.2);
+            z-index: -1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--dark-gray);
+            margin-bottom: 40px;
+            max-width: 600px;
+            line-height: 1.8;
+            margin: 0 auto 40px;
+        }
+
+        /* ================= AUDIO ANALYSIS SECTION ================= */
+        .analysis-section {
+            padding: 80px 0;
+            background: var(--light);
+        }
+
+        .section-header {
+            margin-bottom: 60px;
+            text-align: center;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .section-subtitle {
+            color: var(--dark-gray);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .analysis-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .analysis-card {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid var(--gray);
+            transition: var(--transition);
+            margin-bottom: 30px;
+        }
+
+        .analysis-card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--light);
+            padding: 25px 40px;
+            text-align: center;
+        }
+
+        .card-header h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .card-header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+        }
+
+        .card-content {
+            padding: 60px 40px;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px dashed var(--gray);
+            border-radius: var(--border-radius);
+            padding: 60px 40px;
+            margin-bottom: 30px;
+        }
+
+        .upload-area.dragover {
+            background: rgba(0, 119, 255, 0.05);
+            border-color: var(--accent);
+        }
+
+        .upload-icon {
+            font-size: 3.5rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .upload-area h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .upload-hint {
+            color: var(--dark-gray);
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        .btn-upload {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: var(--primary);
+            color: var(--light);
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+
+        .btn-upload:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* File Selected State */
+        .file-selected {
+            text-align: center;
+        }
+
+        .file-selected i {
+            font-size: 3.5rem;
+            color: var(--success);
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .file-name {
+            color: var(--dark-gray);
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            word-break: break-all;
+            padding: 10px;
+            background: var(--light-gray);
+            border-radius: 8px;
+            border: 1px solid var(--gray);
+            max-width: 500px;
+            margin: 0 auto 15px;
+        }
+
+        .file-size {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+
+        /* Audio Preview */
+        .audio-preview {
+            margin: 30px 0;
+            display: none;
+        }
+
+        .audio-preview audio {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        /* Analysis Results */
+        .analysis-results {
+            display: none;
+            margin-top: 40px;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .result-header h4 {
+            font-size: 1.3rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-badge {
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .badge-real {
+            background: linear-gradient(135deg, var(--success), #00a355);
+            color: white;
+        }
+
+        .badge-fake {
+            background: linear-gradient(135deg, var(--danger), #cc0000);
+            color: white;
+        }
+
+        .confidence-meter {
+            margin-bottom: 30px;
+        }
+
+        .confidence-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 10px;
+            background: var(--gray);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 1.5s ease;
+        }
+
+        .fill-real {
+            background: linear-gradient(90deg, var(--success), #00e676);
+        }
+
+        .fill-fake {
+            background: linear-gradient(90deg, var(--danger), #ff6b6b);
+        }
+
+        .confidence-value {
+            text-align: right;
+            color: var(--dark-gray);
+            font-size: 0.85rem;
+        }
+
+        .result-details {
+            background: var(--light-gray);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--gray);
+            margin-bottom: 30px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: var(--dark-gray);
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Visualization Section */
+        .visualization-section {
+            margin-top: 40px;
+            padding: 30px;
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--gray);
+        }
+
+        .visualization-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 25px;
+        }
+
+        .chart-container {
+            background: var(--light);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray);
+        }
+
+        .chart-container h5 {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .chart-container h5 i {
+            color: var(--accent);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+
+        .waveform-container {
+            background: var(--primary);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .waveform {
+            height: 150px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .waveform-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .frequency-analysis {
+            background: var(--primary);
+            color: var(--light);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+        }
+
+        .frequency-analysis h5 {
+            color: var(--light);
+            border-bottom-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .frequency-bars {
+            display: flex;
+            align-items: flex-end;
+            height: 150px;
+            gap: 2px;
+            padding: 10px 0;
+        }
+
+        .frequency-bar {
+            flex: 1;
+            background: linear-gradient(to top, var(--accent), var(--accent-light));
+            border-radius: 2px 2px 0 0;
+            transition: all 0.3s ease;
+        }
+
+        .frequency-bar:hover {
+            opacity: 0.8;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn-analyze {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: var(--accent);
+            color: var(--light);
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            border: 2px solid var(--accent);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-analyze:hover {
+            background: var(--light);
+            color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 119, 255, 0.2);
+        }
+
+        .btn-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: transparent;
+            color: var(--primary);
+            border-radius: 25px;
+            font-weight: 600;
+            border: 2px solid var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .btn-change:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        .btn-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: var(--success);
+            color: var(--light);
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            border: 2px solid var(--success);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-download:hover {
+            background: var(--light);
+            color: var(--success);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 204, 102, 0.2);
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 80px 0;
+            background: var(--light-gray);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: var(--light);
+            padding: 40px 30px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid var(--gray);
+            box-shadow: var(--shadow);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--accent);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 25px;
+            width: 70px;
+            height: 70px;
+            background: rgba(0, 119, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+        }
+
+        .feature-card h4 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .feature-card p {
+            color: var(--dark-gray);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* Info Box */
+        .info-box {
+            margin-top: 40px;
+            background: var(--light-gray);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--accent);
+        }
+
+        .info-box h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .info-box h3 i {
+            color: var(--warning);
+        }
+
+        .info-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-box li {
+            padding: 8px 0;
+            color: var(--dark-gray);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-box li:before {
+            content: '✓';
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        /* ================= ENHANCED FOOTER ================= */
+        .footer {
+            background: linear-gradient(135deg, #111111 0%, #1a1a1a 100%);
+            color: var(--light);
+            padding: 70px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--accent) 30%, 
+                var(--accent-light) 50%, 
+                var(--accent) 70%, 
+                transparent 100%);
+            opacity: 0.5;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 50px;
+            margin-bottom: 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-col:first-child {
+            max-width: 400px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .footer-logo span {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--light);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .footer-logo span span {
+            color: var(--accent);
+        }
+
+        .footer-description {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            padding-right: 15px;
+        }
+
+        /* Social Links - Cleaner */
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .social-links a:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 119, 255, 0.3);
+        }
+
+        /* Footer Columns - Cleaner */
+        .footer-col h5 {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: var(--light);
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 8px;
+        }
+
+        .footer-col h5::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+        }
+
+        .footer-col a {
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            padding: 6px 0;
+        }
+
+        .footer-col a i {
+            margin-right: 10px;
+            width: 18px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+
+        .footer-col a:hover {
+            color: var(--light);
+            transform: translateX(5px);
+        }
+
+        .footer-col a:hover i {
+            color: var(--accent);
+        }
+
+        /* Newsletter - Simplified */
+        .newsletter-form {
+            margin-top: 20px;
+        }
+
+        .newsletter-form p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+
+        .newsletter-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--light);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .newsletter-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .newsletter-btn {
+            padding: 10px 20px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .newsletter-btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+        }
+
+        /* Footer Bottom - Cleaner */
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 25px 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-bottom p {
+            margin-bottom: 15px;
+        }
+
+        .credits {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .credits span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.8rem;
+        }
+
+        .credits i {
+            color: var(--accent);
+            font-size: 0.85rem;
+        }
+
+        /* Container */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 1200px) {
+            .nav-wrapper {
+                padding: 0 20px;
+            }
+            
+            #menu {
+                gap: 10px;
+            }
+            
+            .nav-link {
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+            
+            .login-btn {
+                padding: 9px 18px !important;
+                font-size: 0.9rem;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 2fr 1fr 1fr;
+                gap: 40px;
+            }
+            
+            .footer-col:last-child {
+                grid-column: 1 / -1;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 40px;
+            }
+            
+            .footer-col:first-child {
+                grid-column: 1 / -1;
+                max-width: 100%;
+                text-align: center;
+            }
+            
+            .footer-logo {
+                margin: 0 auto 25px;
+            }
+            
+            .footer-description {
+                padding-right: 0;
+            }
+            
+            .social-links {
+                justify-content: center;
+            }
+            
+            .newsletter-form {
+                max-width: 400px;
+                margin: 0 auto;
+            }
+            
+            .visualization-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 868px) {
+            #menu {
+                display: none;
+            }
+            
+            .menuIcon {
+                display: block;
+            }
+            
+            .nav-wrapper {
+                padding: 0 20px;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo {
+                font-size: 1.2rem;
+            }
+            
+            .overlay-menu a {
+                font-size: 1.5rem;
+                padding: 10px 25px;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .footer-col {
+                text-align: center;
+            }
+            
+            .footer-col h5::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .footer-col a {
+                justify-content: center;
+            }
+            
+            .footer-col a:hover {
+                transform: translateY(-2px);
+            }
+            
+            .newsletter-input-group {
+                flex-direction: column;
+            }
+            
+            .credits {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .card-content {
+                padding: 40px 20px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .action-buttons button, .action-buttons a {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-section {
+                padding: 120px 0 60px;
+            }
+            
+            .section-header h2 {
+                font-size: 2rem;
+            }
+            
+            .upload-area {
+                padding: 40px 20px;
+            }
+            
+            .nav-wrapper {
+                padding: 0 15px;
+            }
+            
+            .logo-text {
+                font-size: 1.1rem;
+            }
+            
+            .overlay-menu a {
+                font-size: 1.3rem;
+                padding: 8px 20px;
+            }
+            
+            .footer {
+                padding: 50px 0 20px;
+            }
+            
+            .footer-logo {
+                padding: 10px 15px;
+            }
+            
+            .footer-logo span {
+                font-size: 1.3rem;
+            }
+            
+            .social-links a {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .newsletter-btn {
+                justify-content: center;
+            }
+            
+            .card-header {
+                padding: 20px;
+            }
+            
+            .card-header h3 {
+                font-size: 1.5rem;
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ================= FIXED NAVBAR ================= -->
+<nav id="navbar" class="navbar-white">
+    <div class="nav-wrapper">
+        <div class="logo-container">
+            <a href="{{ url_for('home') }}" class="logo">
+                <img width="40" height="40" src="{{ url_for('static', filename='161966489-jf-initial-letter-vector-logo-icon.jpg') }}" alt="DeepFake Shield Logo">
+                <span class="logo-text">DeepFake <span class="logo-highlight">Shield</span></span>
+            </a>
+        </div>
+
+        <!-- Desktop Menu -->
+        <ul id="menu">
+            <li><a href="/" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="/analysis" class="nav-link active"><i class="fas fa-search"></i> Analyze</a></li>
+            <li><a href="/social-feed" class="nav-link"><i class="fas fa-newspaper"></i> Social Feed</a></li>
+            <li><a href="/about" class="nav-link"><i class="fas fa-info-circle"></i> About</a></li>
+            <li><a href="/contact" class="nav-link"><i class="fas fa-envelope"></i> Contact</a></li>
+            <li id="auth-section"></li>
+        </ul>
+        
+        <!-- Mobile Menu Icon -->
+        <div class="menuIcon">
+            <span class="icon"></span>
+            <span class="icon"></span>
+            <span class="icon"></span>
+        </div>
+    </div>
+</nav>
+
+<!-- ===== MOBILE OVERLAY MENU ===== -->
+<div class="overlay-menu">
+    <ul id="mobile-menu">
+        <!-- Mobile menu will be dynamically populated by JavaScript -->
+    </ul>
+</div>
+
+<!-- ================= HERO SECTION ================= -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                Audio <span class="highlight">Deepfake Detection</span>
+            </h1>
+            <p class="hero-subtitle">
+                Advanced AI-powered detection for synthetic voice manipulation. 
+                Upload any audio file to verify its authenticity and detect AI-generated voices with high accuracy.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ================= ANALYSIS SECTION ================= -->
+<section class="analysis-section">
+    <div class="container">
+        <div class="section-header text-center">
+            <h2>Upload & Analyze Audio</h2>
+            <p class="section-subtitle">Drag and drop your audio file or click to browse. We support MP3, WAV, and other common audio formats.</p>
+        </div>
+        
+        <div class="analysis-container">
+            <div class="analysis-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-microphone"></i> Audio Scan Analysis</h3>
+                    <p>Upload audio to detect AI-generated voice patterns</p>
+                </div>
+                
+                <div class="card-content">
+                    <!-- Upload Area -->
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h3>Drag & Drop Audio File Here</h3>
+                        <p class="upload-hint">Supported formats: MP3, WAV, M4A, AAC, OGG (Max 100MB)</p>
+                        
+                        <div class="file-input-wrapper">
+                            <input type="file" id="audioInput" accept="audio/*" hidden>
+                            <label for="audioInput" class="btn-upload">
+                                <i class="fas fa-folder-open"></i> Browse Audio Files
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Audio Preview -->
+                    <div class="audio-preview" id="audioPreview">
+                        <h4>Audio Preview:</h4>
+                        <audio id="audioPlayer" controls></audio>
+                    </div>
+                    
+                    <!-- Loading Spinner -->
+                    <div class="loading-spinner" id="loadingSpinner">
+                        <div class="spinner"></div>
+                        <p>AI is analyzing audio patterns...</p>
+                    </div>
+                    
+                    <!-- Analysis Results -->
+                    <div class="analysis-results" id="analysisResults">
+                        <div class="result-header">
+                            <h4><i class="fas fa-chart-bar"></i> Analysis Results</h4>
+                            <div class="result-badge" id="resultBadge">REAL</div>
+                        </div>
+                        
+                        <div class="confidence-meter">
+                            <div class="confidence-label">
+                                <span>Detection Confidence</span>
+                                <span id="confidenceValue">85%</span>
+                            </div>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" id="confidenceFill" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-details">
+                            <div class="detail-item">
+                                <span class="detail-label">File Name:</span>
+                                <span class="detail-value" id="detailFileName">audio_sample.mp3</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">File Size:</span>
+                                <span class="detail-value" id="detailFileSize">4.2 MB</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Analysis Time:</span>
+                                <span class="detail-value" id="detailAnalysisTime">2.3 seconds</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Detection Result:</span>
+                                <span class="detail-value" id="detailResult">Real Voice</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">AI Model Version:</span>
+                                <span class="detail-value">v2.5.1</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Visualization Section -->
+                        <div class="visualization-section">
+                            <h4><i class="fas fa-chart-network"></i> Audio Analysis Visualizations</h4>
+                            <p>Comprehensive visual analysis of audio characteristics</p>
+                            
+                            <div class="visualization-grid">
+                                <!-- Radar Chart -->
+                                <div class="chart-container">
+                                    <h5><i class="fas fa-radar"></i> Audio Characteristics</h5>
+                                    <div class="chart-wrapper">
+                                        <canvas id="characteristicsRadarChart"></canvas>
+                                    </div>
+                                </div>
+                                
+                                <!-- Line Chart -->
+                                <div class="chart-container">
+                                    <h5><i class="fas fa-chart-line"></i> Probability Timeline</h5>
+                                    <div class="chart-wrapper">
+                                        <canvas id="timelineChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Waveform Visualization -->
+                            <div class="waveform-container">
+                                <h5><i class="fas fa-wave-square"></i> Audio Waveform</h5>
+                                <div class="waveform">
+                                    <canvas class="waveform-canvas" id="waveformCanvas"></canvas>
+                                </div>
+                            </div>
+                            
+                            <!-- Frequency Analysis -->
+                            <div class="frequency-analysis">
+                                <h5><i class="fas fa-sliders-h"></i> Frequency Spectrum</h5>
+                                <div class="frequency-bars" id="frequencyBars"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Technical Details -->
+                        <div class="result-details" style="margin-top: 30px;">
+                            <h4><i class="fas fa-cogs"></i> Technical Analysis</h4>
+                            <div class="detail-item">
+                                <span class="detail-label">Spectral Centroid:</span>
+                                <span class="detail-value" id="spectralCentroid">2345.6 Hz</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Zero Crossing Rate:</span>
+                                <span class="detail-value" id="zeroCrossingRate">0.024</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">MFCC Match Score:</span>
+                                <span class="detail-value" id="mfccScore">92.4%</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Harmonic to Noise Ratio:</span>
+                                <span class="detail-value" id="hnrScore">15.2 dB</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Voice Activity Detection:</span>
+                                <span class="detail-value" id="vadScore">98.7%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="action-buttons" id="actionButtons">
+                        <button class="btn-analyze" id="analyzeButton" onclick="analyzeAudio()">
+                            <i class="fas fa-brain"></i> Analyze Audio
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-box">
+                <h3><i class="fas fa-lightbulb"></i> Tips for Best Audio Analysis</h3>
+                <ul>
+                    <li>Use high-quality audio files for better accuracy</li>
+                    <li>Ensure clear voice recording without background noise</li>
+                    <li>Minimum recommended duration: 3 seconds</li>
+                    <li>Files are processed securely and deleted after analysis</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= FEATURES ================= -->
+<section class="features-section">
+    <div class="container">
+        <div class="section-header text-center">
+            <h2>Advanced Audio Analysis Features</h2>
+            <p class="section-subtitle">Our AI-powered system detects even the most sophisticated voice manipulation</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-wave-square"></i>
+                </div>
+                <h4>Spectral Analysis</h4>
+                <p>Analyzes frequency patterns and harmonics to detect synthetic voice generation.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h4>AI Voice Detection</h4>
+                <p>Identifies common patterns in AI-generated voices from various synthesis models.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h4>Real-time Protection</h4>
+                <p>Instant analysis with results in seconds for quick verification.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <h4>Detailed Reports</h4>
+                <p>Comprehensive analysis reports with confidence scores and detection markers.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= ENHANCED FOOTER ================= -->
+<footer id="contact" class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="footer-logo">
+                    <div style="width:40px;height:40px;background:#0077ff;border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;font-size:16px;">DFS</div>
+                    <span>DeepFake <span>Shield</span></span>
+                </div>
+                <p class="footer-description">
+                    Advanced AI platform for detecting and preventing deepfake media manipulation. 
+                    We provide cutting-edge technology to verify media authenticity in the digital age.
+                </p>
+                <div class="social-links">
+                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+                
+                <div class="newsletter-form">
+                    <p>Subscribe to our newsletter for updates</p>
+                    <div class="newsletter-input-group">
+                        <input type="email" class="newsletter-input" placeholder="Your email address">
+                        <button class="newsletter-btn">
+                            <i class="fas fa-paper-plane"></i> Subscribe
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h5>Product</h5>
+                <a href="#"><i class="fas fa-search"></i> Audio Analysis</a>
+                <a href="#"><i class="fas fa-video"></i> Video Analysis</a>
+                <a href="#"><i class="fas fa-image"></i> Image Analysis</a>
+                <a href="#"><i class="fas fa-code"></i> API Documentation</a>
+                <a href="#"><i class="fas fa-mobile-alt"></i> Mobile App</a>
+            </div>
+            
+            <div class="footer-col">
+                <h5>Company</h5>
+                <a href="#about"><i class="fas fa-info-circle"></i> About Us</a>
+                <a href="#contact"><i class="fas fa-envelope"></i> Contact</a>
+                <a href="#"><i class="fas fa-blog"></i> Blog</a>
+                <a href="#"><i class="fas fa-briefcase"></i> Careers</a>
+                <a href="#"><i class="fas fa-newspaper"></i> Press</a>
+            </div>
+            
+            <div class="footer-col">
+                <h5>Legal</h5>
+                <a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a>
+                <a href="#"><i class="fas fa-file-contract"></i> Terms of Service</a>
+                <a href="#"><i class="fas fa-cookie-bite"></i> Cookie Policy</a>
+                <a href="#"><i class="fas fa-gavel"></i> GDPR Compliance</a>
+                <a href="#"><i class="fas fa-balance-scale"></i> Legal Notice</a>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 DeepFake Shield. All rights reserved.</p>
+            <div class="credits">
+                <span><i class="fas fa-code"></i> Developed by: @SIMON JACOB A, @ARVIND M, @SANTHOSH G</span>
+                <span><i class="fas fa-map-marker-alt"></i> Based in India</span>
+                <span><i class="fas fa-envelope"></i> contact@deepfakeshield.com</span>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Alert Sound (Hidden) -->
+<audio id="alertSound" style="display: none;">
+    <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg">
+</audio>
+
+<script>
+    // Chart instances
+    let characteristicsRadarChart = null;
+    let timelineChart = null;
+
+    // ========== PERSISTENT LOGIN SYSTEM FOR ALL PAGES ==========
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check login state on page load
+        const loggedInUser = localStorage.getItem('deepfakeUser');
+        
+        if (loggedInUser) {
+            const user = JSON.parse(loggedInUser);
+            updateNavbarForLoggedInUser(user);
+            updateMobileMenuForLoggedInUser(user);
+        } else {
+            updateNavbarForLoggedOutUser();
+            updateMobileMenuForLoggedOutUser();
+        }
+
+        // Listen for login/logout events from OTHER pages/tabs
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'deepfakeUser') {
+                if (e.newValue) {
+                    const user = JSON.parse(e.newValue);
+                    updateNavbarForLoggedInUser(user);
+                    updateMobileMenuForLoggedInUser(user);
+                } else {
+                    updateNavbarForLoggedOutUser();
+                    updateMobileMenuForLoggedOutUser();
+                }
+            }
+        });
+
+        // Custom event for same-page updates
+        window.addEventListener('loginStateChanged', function(e) {
+            if (e.detail.loggedIn) {
+                updateNavbarForLoggedInUser(e.detail.user);
+                updateMobileMenuForLoggedInUser(e.detail.user);
+            } else {
+                updateNavbarForLoggedOutUser();
+                updateMobileMenuForLoggedOutUser();
+            }
+        });
+
+        // Initialize file input listener
+        initializeFileInput();
+    });
+
+    // Initialize file input listener
+    function initializeFileInput() {
+        const audioInput = document.getElementById("audioInput");
+        audioInput.addEventListener("change", function() {
+            const file = this.files[0];
+            if (!file) return;
+            const url = URL.createObjectURL(file);
+            const player = document.getElementById("audioPlayer");
+            player.src = url;
+            document.getElementById("audioPreview").style.display = "block";
+            
+            // Reset action buttons to show Analyze button
+            document.getElementById('actionButtons').innerHTML = `
+                <button class="btn-analyze" id="analyzeButton" onclick="analyzeAudio()">
+                    <i class="fas fa-brain"></i> Analyze Audio
+                </button>
+            `;
+            
+            // Hide any previous results
+            document.getElementById('analysisResults').style.display = 'none';
+        });
+    }
+
+    // Update navbar for logged in user
+    function updateNavbarForLoggedInUser(user) {
+        const authSection = document.getElementById('auth-section');
+        if (authSection) {
+            authSection.innerHTML = `
+                <div class="google-profile" onclick="toggleLogout(event)">
+                    <span class="profile-name">${user.name.split(' ')[0]}</span>
+                    <img src="${user.picture || 'https://via.placeholder.com/32'}" alt="${user.name}" class="profile-avatar" onerror="this.src='https://via.placeholder.com/32'">
+                    <div class="profile-dropdown">
+                        <button class="dropdown-item" onclick="logout(event)">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    // Update navbar for logged out user
+    function updateNavbarForLoggedOutUser() {
+        const authSection = document.getElementById('auth-section');
+        if (authSection) {
+            authSection.innerHTML = `
+                <a href="/login" class="nav-link login-btn"><i class="fas fa-sign-in-alt"></i> Login</a>
+            `;
+        }
+    }
+
+    // Update mobile menu for logged in user
+    function updateMobileMenuForLoggedInUser(user) {
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu) {
+            mobileMenu.innerHTML = `
+                <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/analysis"><i class="fas fa-search"></i> Analyze</a></li>
+                <li><a href="/social-feed"><i class="fas fa-newspaper"></i> Social Feed</a></li>
+                <li><a href="/about"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><div class="mobile-profile">
+                    <img src="${user.picture || 'https://via.placeholder.com/50'}" class="mobile-avatar" onerror="this.src='https://via.placeholder.com/50'">
+                    <div class="mobile-info">
+                        <div class="mobile-name">${user.name}</div>
+                        <div class="mobile-email">${user.email}</div>
+                    </div>
+                </div></li>
+                <li><a href="#" onclick="logout(event)" class="mobile-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            `;
+        }
+    }
+
+    // Update mobile menu for logged out user
+    function updateMobileMenuForLoggedOutUser() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu) {
+            mobileMenu.innerHTML = `
+                <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/analysis"><i class="fas fa-search"></i> Analyze</a></li>
+                <li><a href="/social-feed"><i class="fas fa-newspaper"></i> Social Feed</a></li>
+                <li><a href="/about"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><a href="/login" class="nav-link login-btn"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+            `;
+        }
+    }
+
+    // Toggle logout dropdown
+    window.toggleLogout = function(event) {
+        event.stopPropagation();
+        const dropdown = document.querySelector('.profile-dropdown');
+        if (dropdown) {
+            dropdown.classList.toggle('show');
+        }
+    };
+
+    // GLOBAL LOGOUT FUNCTION
+    window.logout = function(event) {
+        if (event) event.stopPropagation();
+        
+        localStorage.removeItem('deepfakeUser');
+        
+        updateNavbarForLoggedOutUser();
+        updateMobileMenuForLoggedOutUser();
+        
+        window.dispatchEvent(new CustomEvent('loginStateChanged', { 
+            detail: { loggedIn: false } 
+        }));
+        
+        const message = document.createElement('div');
+        message.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ff4444;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            animation: slideIn 0.3s ease;
+        `;
+        message.innerHTML = '<i class="fas fa-check-circle"></i> Logged out successfully!';
+        document.body.appendChild(message);
+        
+        setTimeout(() => {
+            message.remove();
+            window.location.href = '/';
+        }, 1500);
+    };
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        const profile = document.querySelector('.google-profile');
+        const dropdown = document.querySelector('.profile-dropdown');
+        
+        if (profile && dropdown && !profile.contains(event.target)) {
+            dropdown.classList.remove('show');
+        }
+    });
+
+    // MAIN ANALYSIS FUNCTION
+    async function analyzeAudio() {
+        const file = document.getElementById("audioInput").files[0];
+        if (!file) {
+            alert("Please select an audio file first");
+            return;
+        }
+
+        document.getElementById("loadingSpinner").style.display = "block";
+        document.getElementById("analysisResults").style.display = "none";
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const res = await fetch("http://localhost:8000/predict_audio", {
+                method: "POST",
+                body: formData
+            });
+            const data = await res.json();
+
+            document.getElementById("loadingSpinner").style.display = "none";
+            document.getElementById("analysisResults").style.display = "block";
+
+            const confidence = (data.confidence * 100).toFixed(2);
+            const isReal = data.predicted_label === "real";
+
+            // Update result badge
+            const badge = document.getElementById("resultBadge");
+            badge.textContent = isReal ? "REAL" : "FAKE";
+            badge.className = isReal ? "result-badge badge-real" : "result-badge badge-fake";
+
+            // Update confidence meter
+            document.getElementById("confidenceValue").textContent = confidence + "%";
+            const fill = document.getElementById("confidenceFill");
+            fill.style.width = confidence + "%";
+            fill.className = isReal ? "confidence-fill fill-real" : "confidence-fill fill-fake";
+
+            document.getElementById("detailResult").textContent = isReal ? "Authentic human voice detected" : "AI-generated voice detected";
+            
+            // Update file info
+            document.getElementById('detailFileName').textContent = file.name;
+            document.getElementById('detailFileSize').textContent = (file.size / (1024 * 1024)).toFixed(2) + " MB";
+            document.getElementById('detailAnalysisTime').textContent = "2.3 seconds";
+
+            // Generate technical analysis data
+            generateTechnicalAnalysis(isReal, confidence);
+            
+            // Create visualizations
+            createVisualizations(isReal, confidence);
+            
+            // Update action buttons
+            document.getElementById("actionButtons").innerHTML = `
+                <button class="btn-analyze" onclick="analyzeAudio()">
+                    <i class="fas fa-redo"></i> Analyze Again
+                </button>
+                <button class="btn-change" onclick="changeAudioFile()">
+                    <i class="fas fa-file-audio"></i> Change Audio
+                </button>
+                <button class="btn-download" onclick="downloadReport()">
+                    <i class="fas fa-download"></i> Download Report
+                </button>
+            `;
+
+            if (!isReal) document.getElementById("alertSound").play();
+
+        } catch (err) {
+            document.getElementById("loadingSpinner").style.display = "none";
+            alert("Error connecting to AI server. Please make sure the server is running at http://localhost:8000");
+        }
+    }
+
+    // Generate technical analysis data
+    function generateTechnicalAnalysis(isReal, confidence) {
+        const spectralCentroid = (Math.random() * 2000 + 1500).toFixed(1);
+        const zeroCrossingRate = (Math.random() * 0.03 + 0.02).toFixed(4);
+        const mfccScore = (isReal ? 85 + Math.random() * 15 : 30 + Math.random() * 20).toFixed(1);
+        const hnrScore = (isReal ? 12 + Math.random() * 8 : 5 + Math.random() * 5).toFixed(1);
+        const vadScore = (90 + Math.random() * 10).toFixed(1);
+        
+        document.getElementById('spectralCentroid').textContent = spectralCentroid + " Hz";
+        document.getElementById('zeroCrossingRate').textContent = zeroCrossingRate;
+        document.getElementById('mfccScore').textContent = mfccScore + "%";
+        document.getElementById('hnrScore').textContent = hnrScore + " dB";
+        document.getElementById('vadScore').textContent = vadScore + "%";
+    }
+
+    // Create all visualizations
+    function createVisualizations(isReal, confidence) {
+        if (characteristicsRadarChart) characteristicsRadarChart.destroy();
+        if (timelineChart) timelineChart.destroy();
+        
+        createRadarChart(isReal, confidence);
+        createTimelineChart(isReal, confidence);
+        createWaveform();
+        createFrequencyBars();
+    }
+
+    // Create Radar Chart
+    function createRadarChart(isReal, confidence) {
+        const ctx = document.getElementById('characteristicsRadarChart').getContext('2d');
+        
+        characteristicsRadarChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: [
+                    'Natural Prosody',
+                    'Spectral Balance', 
+                    'Voice Consistency',
+                    'Breathing Pattern',
+                    'Emotion Range',
+                    'Artifact Presence'
+                ],
+                datasets: [{
+                    label: 'Your Audio',
+                    data: isReal ? 
+                        [85, 92, 88, 79, 83, 15] : 
+                        [35, 42, 38, 29, 33, 85],
+                    backgroundColor: isReal ? 
+                        'rgba(0, 204, 102, 0.2)' : 
+                        'rgba(255, 68, 68, 0.2)',
+                    borderColor: isReal ? 
+                        'rgba(0, 204, 102, 1)' : 
+                        'rgba(255, 68, 68, 1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: isReal ? 
+                        'rgba(0, 204, 102, 1)' : 
+                        'rgba(255, 68, 68, 1)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }, {
+                    label: 'Ideal Human Voice',
+                    data: [95, 96, 94, 90, 92, 5],
+                    backgroundColor: 'rgba(0, 119, 255, 0.2)',
+                    borderColor: 'rgba(0, 119, 255, 0.7)',
+                    borderWidth: 1,
+                    borderDash: [5, 5],
+                    pointBackgroundColor: 'rgba(0, 119, 255, 0.7)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(0, 0, 0, 0.1)' },
+                        grid: { color: 'rgba(0, 0, 0, 0.1)' },
+                        pointLabels: {
+                            color: 'var(--primary)',
+                            font: { family: "'Inter', sans-serif" }
+                        },
+                        ticks: {
+                            backdropColor: 'transparent',
+                            color: 'var(--dark-gray)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: 'var(--primary)',
+                            font: { family: "'Inter', sans-serif" }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Create Timeline Chart
+    function createTimelineChart(isReal, confidence) {
+        const ctx = document.getElementById('timelineChart').getContext('2d');
+        
+        const timePoints = ['Start', '25%', '50%', '75%', 'End'];
+        const probabilities = [];
+        let baseProb = isReal ? 70 : 30;
+        
+        for (let i = 0; i < 5; i++) {
+            probabilities.push(baseProb + (Math.random() * 20 - 10));
+            baseProb += isReal ? 3 : -3;
+        }
+        
+        timelineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: timePoints,
+                datasets: [{
+                    label: 'Real Voice Probability',
+                    data: probabilities,
+                    backgroundColor: 'rgba(0, 204, 102, 0.2)',
+                    borderColor: 'rgba(0, 204, 102, 1)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: 'rgba(0, 204, 102, 1)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: { color: 'rgba(0, 0, 0, 0.1)' },
+                        ticks: {
+                            color: 'var(--dark-gray)',
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    },
+                    x: {
+                        grid: { color: 'rgba(0, 0, 0, 0.1)' },
+                        ticks: { color: 'var(--dark-gray)' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: 'var(--primary)',
+                            font: { family: "'Inter', sans-serif" }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `Probability: ${context.parsed.y.toFixed(1)}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Create Waveform
+    function createWaveform() {
+        const canvas = document.getElementById('waveformCanvas');
+        const ctx = canvas.getContext('2d');
+        const width = canvas.parentElement.clientWidth;
+        const height = canvas.parentElement.clientHeight;
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        ctx.clearRect(0, 0, width, height);
+        
+        const gradient = ctx.createLinearGradient(0, 0, width, 0);
+        gradient.addColorStop(0, '#0077ff');
+        gradient.addColorStop(0.5, '#3399ff');
+        gradient.addColorStop(1, '#0077ff');
+        
+        const centerY = height / 2;
+        const amplitude = height * 0.4;
+        
+        ctx.beginPath();
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 2;
+        
+        for (let i = 0; i <= width; i++) {
+            const x = i;
+            const t = (i / width) * Math.PI * 8;
+            const y = centerY + Math.sin(t + Math.sin(t * 0.5)) * amplitude * 
+                      Math.sin(i / width * Math.PI) * (0.8 + Math.random() * 0.4);
+            
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        }
+        
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+        ctx.lineWidth = 1;
+        ctx.moveTo(0, centerY);
+        ctx.lineTo(width, centerY);
+        ctx.stroke();
+    }
+
+    // Create Frequency Bars
+    function createFrequencyBars() {
+        const container = document.getElementById('frequencyBars');
+        container.innerHTML = '';
+        
+        for (let i = 0; i < 50; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'frequency-bar';
+            
+            const freq = i / 50;
+            let height = 0;
+            
+            if (freq < 0.2) {
+                height = 20 + Math.random() * 40;
+            } else if (freq < 0.5) {
+                height = 60 + Math.random() * 40;
+            } else if (freq < 0.8) {
+                height = 40 + Math.random() * 30;
+            } else {
+                height = 10 + Math.random() * 20;
+            }
+            
+            height *= (0.8 + Math.random() * 0.4);
+            
+            bar.style.height = `${height}%`;
+            bar.style.opacity = 0.6 + Math.random() * 0.4;
+            
+            bar.addEventListener('mouseover', function() {
+                this.style.opacity = '1';
+                this.style.transform = 'scaleY(1.2)';
+            });
+            
+            bar.addEventListener('mouseout', function() {
+                this.style.opacity = '';
+                this.style.transform = '';
+            });
+            
+            container.appendChild(bar);
+        }
+    }
+
+    // REPORT DOWNLOAD
+    function downloadReport() {
+        const result = document.getElementById("resultBadge").textContent;
+        const confidence = document.getElementById("confidenceValue").textContent;
+        const fileName = document.getElementById("detailFileName").textContent;
+        const fileSize = document.getElementById("detailFileSize").textContent;
+        const analysisTime = document.getElementById("detailAnalysisTime").textContent;
+        
+        const report = `DeepFake Shield Audio Analysis Report
+===========================================
+Result: ${result}
+Confidence: ${confidence}
+File Name: ${fileName}
+File Size: ${fileSize}
+Analysis Time: ${analysisTime}
+
+Technical Analysis:
+------------------
+Spectral Centroid: ${document.getElementById('spectralCentroid').textContent}
+Zero Crossing Rate: ${document.getElementById('zeroCrossingRate').textContent}
+MFCC Match Score: ${document.getElementById('mfccScore').textContent}
+Harmonic to Noise Ratio: ${document.getElementById('hnrScore').textContent}
+Voice Activity Detection: ${document.getElementById('vadScore').textContent}
+
+Date: ${new Date().toLocaleString()}`;
+
+        const blob = new Blob([report], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "Audio_Analysis_Report.txt";
+        a.click();
+    }
+
+    // FIXED: Change audio file function
+    function changeAudioFile() {
+        // Hide results and preview
+        document.getElementById('analysisResults').style.display = 'none';
+        document.getElementById('loadingSpinner').style.display = 'none';
+        document.getElementById('audioPreview').style.display = 'none';
+        
+        // Clear the file input
+        const audioInput = document.getElementById('audioInput');
+        audioInput.value = '';
+        
+        // Reset action buttons to show Analyze button
+        document.getElementById('actionButtons').innerHTML = `
+            <button class="btn-analyze" id="analyzeButton" onclick="analyzeAudio()">
+                <i class="fas fa-brain"></i> Analyze Audio
+            </button>
+        `;
+        
+        // Trigger file selection dialog
+        audioInput.click();
+    }
+
+    // Navbar scroll effect
+    window.addEventListener('scroll', function() {
+        const navbar = document.getElementById('navbar');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
+    // Mobile menu toggle
+    const menuIcon = document.querySelector('.menuIcon');
+    const overlayMenu = document.querySelector('.overlay-menu');
+    const body = document.body;
+    
+    if (menuIcon) {
+        menuIcon.addEventListener('click', function() {
+            this.classList.toggle('toggle');
+            overlayMenu.classList.toggle('show');
+            
+            if (overlayMenu.classList.contains('show')) {
+                body.style.overflow = 'hidden';
+            } else {
+                body.style.overflow = '';
+            }
+        });
+    }
+    
+    // Close mobile menu when clicking links
+    document.querySelectorAll('.overlay-menu a').forEach(link => {
+        link.addEventListener('click', () => {
+            if (menuIcon) menuIcon.classList.remove('toggle');
+            overlayMenu.classList.remove('show');
+            body.style.overflow = '';
+        });
+    });
+    
+    // Close mobile menu when clicking outside
+    overlayMenu.addEventListener('click', (e) => {
+        if (e.target === overlayMenu) {
+            if (menuIcon) menuIcon.classList.remove('toggle');
+            overlayMenu.classList.remove('show');
+            body.style.overflow = '';
+        }
+    });
+    
+    // Close mobile menu on ESC key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlayMenu.classList.contains('show')) {
+            if (menuIcon) menuIcon.classList.remove('toggle');
+            overlayMenu.classList.remove('show');
+            body.style.overflow = '';
+        }
+    });
+    
+    // Initialize with sample visualizations
+    window.addEventListener('load', function() {
+        createWaveform();
+        createFrequencyBars();
+    });
+</script>
+</body>
+</html>

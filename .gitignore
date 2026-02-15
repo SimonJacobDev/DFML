@@ -1,0 +1,32 @@
+# Model files (too large for git)
+*.pth
+*.pt
+*.h5
+*.keras
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.instance/
+_mycache_/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Environment
+.env
+venv/
+env/
+ENV/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+*.bat
+*.log
+instance/

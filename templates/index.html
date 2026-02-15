@@ -1,0 +1,2501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DeepFake Shield - AI-Powered Media Authenticity Detection</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Advanced AI platform for detecting deepfake videos, images, and audio content. Protect yourself from synthetic media manipulation.">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='161966489-jf-initial-letter-vector-logo-icon.jpg') }}">
+    
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #000000;
+            --primary-dark: #333333;
+            --secondary: #666666;
+            --accent: #0077ff;
+            --accent-light: #3399ff;
+            --success: #00cc66;
+            --danger: #ff4444;
+            --warning: #ffaa00;
+            --light: #ffffff;
+            --light-gray: #f8f9fa;
+            --gray: #e0e0e0;
+            --medium-gray: #cccccc;
+            --dark-gray: #666666;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s ease;
+            --border-radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light);
+            color: var(--primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        /* Google-Style Profile */
+        .google-profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 5px 5px 12px;
+            border-radius: 30px;
+            background: transparent;
+            cursor: pointer;
+            position: relative;
+            margin-left: 10px;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .google-profile:hover {
+            background: rgba(0, 119, 255, 0.05);
+            border-color: var(--gray);
+        }
+
+        .profile-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+
+        .profile-name {
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: var(--primary);
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-width: 120px;
+            display: none;
+            z-index: 1001;
+            border: 1px solid var(--gray);
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .profile-dropdown.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ff4444;
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 0.95rem;
+            cursor: pointer;
+            border: none;
+            background: white;
+            width: 100%;
+            text-align: left;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(255, 68, 68, 0.05);
+        }
+
+        .dropdown-item i {
+            width: 18px;
+        }
+
+        /* Mobile Profile Styles */
+        .mobile-profile {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 119, 255, 0.05);
+            border-radius: 50px;
+        }
+
+        .mobile-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+
+        .mobile-info {
+            text-align: left;
+        }
+
+        .mobile-name {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .mobile-email {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        .mobile-logout {
+            color: #ff4444 !important;
+            font-size: 1.5rem !important;
+        }
+
+        /* ================= FIXED NAVBAR ================= */
+        .navbar-white {
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: var(--transition);
+            padding: 0;
+        }
+
+        .navbar-white.scrolled {
+            box-shadow: var(--shadow);
+        }
+
+        .nav-wrapper {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 1.4rem;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .logo-highlight {
+            color: var(--accent);
+        }
+
+        #menu {
+            display: flex;
+            list-style: none;
+            gap: 15px;
+            margin: 0;
+            padding: 0;
+            align-items: center;
+        }
+
+        #menu li {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--dark-gray);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 10px 15px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            border-radius: 8px;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+            background: rgba(0, 119, 255, 0.05);
+        }
+
+        .nav-link.active {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        /* FIXED LOGIN BUTTON */
+        .login-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white !important;
+            padding: 10px 22px !important;
+            border-radius: 25px;
+            font-weight: 600;
+            display: flex !important;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            border: none;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(0, 119, 255, 0.2);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 119, 255, 0.3);
+            color: white !important;
+            background: linear-gradient(135deg, var(--accent-light), var(--accent));
+        }
+
+        /* Mobile Menu Icon */
+        .menuIcon {
+            display: none;
+            width: 30px;
+            height: 24px;
+            position: relative;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .menuIcon .icon {
+            display: block;
+            position: absolute;
+            height: 3px;
+            width: 100%;
+            background: var(--primary);
+            border-radius: 3px;
+            opacity: 1;
+            left: 0;
+            transform: rotate(0deg);
+            transition: 0.25s ease-in-out;
+        }
+
+        .menuIcon .icon:nth-child(1) {
+            top: 0px;
+        }
+
+        .menuIcon .icon:nth-child(2) {
+            top: 10px;
+        }
+
+        .menuIcon .icon:nth-child(3) {
+            top: 20px;
+        }
+
+        .menuIcon.toggle .icon:nth-child(1) {
+            top: 10px;
+            transform: rotate(135deg);
+        }
+
+        .menuIcon.toggle .icon:nth-child(2) {
+            opacity: 0;
+            left: -30px;
+        }
+
+        .menuIcon.toggle .icon:nth-child(3) {
+            top: 10px;
+            transform: rotate(-135deg);
+        }
+
+        /* Overlay Menu */
+        .overlay-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+        }
+
+        .overlay-menu.show {
+            transform: translateX(0);
+        }
+
+        .overlay-menu ul {
+            list-style: none;
+            text-align: center;
+            padding: 0;
+        }
+
+        .overlay-menu li {
+            margin: 20px 0;
+        }
+
+        .overlay-menu a {
+            color: var(--primary);
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 12px 30px;
+            border-radius: 50px;
+            transition: var(--transition);
+        }
+
+        .overlay-menu a:hover {
+            color: var(--accent);
+            background: rgba(0, 119, 255, 0.05);
+        }
+
+        .mobile-login-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(0, 119, 255, 0.2);
+        }
+
+        .mobile-login-btn:hover {
+            background: linear-gradient(135deg, var(--accent-light), var(--accent));
+            color: white !important;
+        }
+
+        /* ================= HERO SECTION ================= */
+        .hero-section {
+            padding: 150px 0 100px;
+            background: linear-gradient(135deg, var(--light-gray) 0%, var(--light) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%230077ff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 3.2rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .highlight {
+            color: var(--accent);
+            position: relative;
+        }
+
+        .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 119, 255, 0.2);
+            z-index: -1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--dark-gray);
+            margin-bottom: 40px;
+            max-width: 500px;
+            line-height: 1.8;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--light);
+            padding: 14px 32px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+            border: 2px solid var(--accent);
+        }
+
+        .btn-primary:hover {
+            background: var(--light);
+            color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            padding: 14px 32px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+            border: 2px solid var(--gray);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .stat-item h3 {
+            font-size: 2.2rem;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+
+        .stat-item p {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hero-visual {
+            position: relative;
+            z-index: 2;
+        }
+
+        .analysis-demo {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-hover);
+            overflow: hidden;
+            border: 1px solid var(--gray);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .demo-header {
+            background: var(--primary);
+            color: var(--light);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .demo-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .demo-dots span {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            opacity: 0.7;
+        }
+
+        .demo-dots span:nth-child(1) { background: #ff5f57; }
+        .demo-dots span:nth-child(2) { background: #ffbd2e; }
+        .demo-dots span:nth-child(3) { background: #28ca42; }
+
+        .demo-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .demo-content {
+            padding: 30px;
+        }
+
+        .demo-progress {
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--light-gray);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            width: 70%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            border-radius: 3px;
+            animation: progress 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes progress {
+            0% { width: 70%; }
+            100% { width: 75%; }
+        }
+
+        .demo-progress span {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        .demo-results {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .result-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .result-item.real {
+            background: rgba(0, 204, 102, 0.1);
+            border: 1px solid rgba(0, 204, 102, 0.3);
+        }
+
+        .result-item.fake {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid rgba(255, 68, 68, 0.3);
+        }
+
+        .result-item i {
+            font-size: 1.2rem;
+        }
+
+        .result-item.real i {
+            color: var(--success);
+        }
+
+        .result-item.fake i {
+            color: var(--danger);
+        }
+
+        /* ================= UPLOAD SECTION ================= */
+        .upload-section {
+            padding: 100px 0;
+            background: var(--light);
+        }
+
+        .section-header {
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .section-subtitle {
+            color: var(--dark-gray);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .upload-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .upload-card {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid var(--gray);
+            transition: var(--transition);
+        }
+
+        .upload-card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .upload-tabs {
+            display: flex;
+            background: var(--light-gray);
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 20px;
+            background: transparent;
+            border: none;
+            color: var(--dark-gray);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .tab-btn.active {
+            background: var(--light);
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: var(--primary);
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        .upload-area {
+            padding: 60px 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .upload-area.dragover {
+            background: rgba(0, 119, 255, 0.05);
+            border: 2px dashed var(--accent);
+        }
+
+        .upload-icon {
+            font-size: 3.5rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .upload-area h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .upload-hint {
+            color: var(--dark-gray);
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        .btn-upload {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: var(--primary);
+            color: var(--light);
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+
+        .btn-upload:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .upload-features {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        .feature i {
+            color: var(--accent);
+        }
+
+        .upload-login {
+            padding: 30px 40px;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .login-prompt {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .login-prompt i {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+
+        .login-prompt h4 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .login-prompt p {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        .btn-login {
+            background: var(--accent);
+            color: var(--light);
+            padding: 12px 28px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+            border: 2px solid var(--accent);
+        }
+
+        .btn-login:hover {
+            background: var(--light);
+            color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 119, 255, 0.2);
+        }
+
+        .upload-info {
+            margin-top: 40px;
+            background: var(--light-gray);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--accent);
+        }
+
+        .upload-info h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .upload-info h3 i {
+            color: var(--warning);
+        }
+
+        .upload-info ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .upload-info li {
+            padding: 8px 0;
+            color: var(--dark-gray);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .upload-info li:before {
+            content: '✓';
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        /* Upload Success */
+        .upload-success {
+            text-align: center;
+        }
+
+        .upload-success i {
+            font-size: 3.5rem;
+            color: var(--success);
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .upload-success h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .file-name {
+            color: var(--dark-gray);
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            word-break: break-all;
+            padding: 10px;
+            background: var(--light-gray);
+            border-radius: 8px;
+            border: 1px solid var(--gray);
+        }
+
+        .file-size {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+
+        .upload-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-analyze {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: var(--accent);
+            color: var(--light);
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            border: 2px solid var(--accent);
+        }
+
+        .btn-analyze:hover {
+            background: var(--light);
+            color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 119, 255, 0.2);
+        }
+
+        .btn-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: transparent;
+            color: var(--primary);
+            border-radius: 25px;
+            font-weight: 600;
+            border: 2px solid var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-change:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        /* ================= FEATURES SECTION ================= */
+        .features-section {
+            padding: 100px 0;
+            background: var(--light-gray);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: var(--light);
+            padding: 40px 30px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid var(--gray);
+            box-shadow: var(--shadow);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--accent);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 25px;
+            width: 70px;
+            height: 70px;
+            background: rgba(0, 119, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+        }
+
+        .feature-card h4 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .feature-card p {
+            color: var(--dark-gray);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* ================= HOW IT WORKS ================= */
+        .how-it-works {
+            padding: 100px 0;
+            background: var(--light);
+        }
+
+        .steps {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            padding: 30px;
+            background: var(--light);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--gray);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .step:hover {
+            border-color: var(--accent);
+            transform: translateX(10px);
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--accent);
+            color: var(--light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-content h4 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .step-content p {
+            color: var(--dark-gray);
+        }
+
+        .step-arrow {
+            color: var(--medium-gray);
+            font-size: 1.5rem;
+        }
+
+        /* ================= ENHANCED FOOTER ================= */
+        .footer {
+            background: linear-gradient(135deg, #111111 0%, #1a1a1a 100%);
+            color: var(--light);
+            padding: 70px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--accent) 30%, 
+                var(--accent-light) 50%, 
+                var(--accent) 70%, 
+                transparent 100%);
+            opacity: 0.5;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 50px;
+            margin-bottom: 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-col:first-child {
+            max-width: 400px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .footer-logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            object-fit: cover;
+            box-shadow: 0 4px 12px rgba(0, 119, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-logo span {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--light);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .footer-logo span span {
+            color: var(--accent);
+        }
+
+        .footer-description {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            padding-right: 15px;
+        }
+
+        /* Social Links - Cleaner */
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .social-links a:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 119, 255, 0.3);
+        }
+
+        /* Footer Columns - Cleaner */
+        .footer-col h5 {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: var(--light);
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 8px;
+        }
+
+        .footer-col h5::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+        }
+
+        .footer-col a {
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            padding: 6px 0;
+        }
+
+        .footer-col a i {
+            margin-right: 10px;
+            width: 18px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+
+        .footer-col a:hover {
+            color: var(--light);
+            transform: translateX(5px);
+        }
+
+        .footer-col a:hover i {
+            color: var(--accent);
+        }
+
+        /* Newsletter - Simplified */
+        .newsletter-form {
+            margin-top: 20px;
+        }
+
+        .newsletter-form p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+
+        .newsletter-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--light);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .newsletter-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .newsletter-btn {
+            padding: 10px 20px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .newsletter-btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+        }
+
+        /* Footer Bottom - Cleaner */
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 25px 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-bottom p {
+            margin-bottom: 15px;
+        }
+
+        .credits {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .credits span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.8rem;
+        }
+
+        .credits i {
+            color: var(--accent);
+            font-size: 0.85rem;
+        }
+
+        /* ================= BANNER ================= */
+        .info-banner {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            color: var(--light);
+            padding: 15px 0;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            transform: translateY(100%);
+            animation: slideUp 0.5s ease 1s forwards;
+        }
+
+        @keyframes slideUp {
+            to { transform: translateY(0); }
+        }
+
+        .banner-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .banner-content i {
+            font-size: 1.2rem;
+        }
+
+        .banner-content span {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .banner-link {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .banner-link:hover {
+            gap: 10px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 1200px) {
+            .nav-wrapper {
+                padding: 0 20px;
+            }
+            
+            #menu {
+                gap: 10px;
+            }
+            
+            .nav-link {
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+            
+            .login-btn {
+                padding: 9px 18px !important;
+                font-size: 0.9rem;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 2fr 1fr 1fr;
+                gap: 40px;
+            }
+            
+            .footer-col:last-child {
+                grid-column: 1 / -1;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-stats {
+                flex-direction: column;
+                gap: 25px;
+            }
+            
+            .upload-login {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .login-prompt {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 40px;
+            }
+            
+            .footer-col:first-child {
+                grid-column: 1 / -1;
+                max-width: 100%;
+                text-align: center;
+            }
+            
+            .footer-logo {
+                margin: 0 auto 25px;
+            }
+            
+            .footer-description {
+                padding-right: 0;
+            }
+            
+            .social-links {
+                justify-content: center;
+            }
+            
+            .newsletter-form {
+                max-width: 400px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 868px) {
+            #menu {
+                display: none;
+            }
+            
+            .menuIcon {
+                display: block;
+            }
+            
+            .nav-wrapper {
+                padding: 0 20px;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-cta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .upload-tabs {
+                flex-direction: column;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .banner-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 8px;
+            }
+            
+            .logo {
+                font-size: 1.2rem;
+            }
+            
+            .logo img {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .overlay-menu a {
+                font-size: 1.5rem;
+                padding: 10px 25px;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .footer-col {
+                text-align: center;
+            }
+            
+            .footer-col h5::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .footer-col a {
+                justify-content: center;
+            }
+            
+            .footer-col a:hover {
+                transform: translateY(-2px);
+            }
+            
+            .newsletter-input-group {
+                flex-direction: column;
+            }
+            
+            .credits {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-section {
+                padding: 120px 0 60px;
+            }
+            
+            .section-header h2 {
+                font-size: 2rem;
+            }
+            
+            .upload-area {
+                padding: 40px 20px;
+            }
+            
+            .upload-features {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-wrapper {
+                padding: 0 15px;
+            }
+            
+            .logo-text {
+                font-size: 1.1rem;
+            }
+            
+            .overlay-menu a {
+                font-size: 1.3rem;
+                padding: 8px 20px;
+            }
+            
+            .footer {
+                padding: 50px 0 20px;
+            }
+            
+            .footer-logo {
+                padding: 10px 15px;
+            }
+            
+            .footer-logo img {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .footer-logo span {
+                font-size: 1.3rem;
+            }
+            
+            .social-links a {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .newsletter-btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ================= FIXED NAVBAR ================= -->
+<nav id="navbar" class="navbar-white">
+    <div class="nav-wrapper">
+        <div class="logo-container">
+            <a href="{{ url_for('home') }}" class="logo">
+                <img width="40" height="40" src="{{ url_for('static', filename='161966489-jf-initial-letter-vector-logo-icon.jpg') }}" alt="DeepFake Shield Logo">
+                <span class="logo-text">DeepFake <span class="logo-highlight">Shield</span></span>
+            </a>
+        </div>
+
+        <!-- Desktop Menu - REMOVED DUPLICATE LOGIN BUTTON -->
+        <ul id="menu">
+            <li><a href="{{ url_for('home') }}" class="nav-link active"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="{{ url_for('analysis') }}" class="nav-link"><i class="fas fa-search"></i> Analyze</a></li>
+            <li><a href="/social-feed" class="nav-link"><i class="fas fa-newspaper"></i> Social Feed</a></li>
+            <li><a href="{{ url_for('about') }}" class="nav-link"><i class="fas fa-info-circle"></i> About</a></li>
+            <li><a href="{{ url_for('contact') }}" class="nav-link"><i class="fas fa-envelope"></i> Contact</a></li>
+            <li id="auth-section"></li> <!-- This will show either profile OR login button -->
+        </ul>
+        
+        <!-- Mobile Menu Icon -->
+        <div class="menuIcon">
+            <span class="icon"></span>
+            <span class="icon"></span>
+            <span class="icon"></span>
+        </div>
+    </div>
+</nav>
+
+<!-- ===== MOBILE OVERLAY MENU ===== -->
+<div class="overlay-menu">
+    <ul id="mobile-menu">
+        <!-- Mobile menu will be dynamically populated by JavaScript -->
+    </ul>
+</div>
+
+<!-- ================= HERO SECTION ================= -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 hero-content">
+                <h1 class="hero-title">
+                    Verify Media <span class="highlight">Authenticity</span> with AI
+                </h1>
+                <p class="hero-subtitle">
+                    Advanced deepfake detection for videos, images, and audio. 
+                    Our AI-powered platform helps you distinguish real from synthetic media with unparalleled accuracy.
+                </p>
+                <div class="hero-cta">
+                    <a href="#upload" class="btn-primary">
+                        <i class="fas fa-play-circle"></i> Start Analysis
+                    </a>
+                    <a href="{{ url_for('about') }}" class="btn-secondary">
+                        <i class="fas fa-play"></i> See How It Works
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <h3>99.2%</h3>
+                        <p>Detection Accuracy</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>2.1s</h3>
+                        <p>Average Scan Time</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>50K+</h3>
+                        <p>Files Analyzed</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-visual">
+                    <div class="analysis-demo">
+                        <div class="demo-header">
+                            <div class="demo-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <div class="demo-title">DeepScan Analysis</div>
+                        </div>
+                        <div class="demo-content">
+                            <div class="demo-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill"></div>
+                                </div>
+                                <span>Analyzing Media Patterns...</span>
+                            </div>
+                            <div class="demo-results">
+                                <div class="result-item real">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Authenticity Score: 98%</span>
+                                </div>
+                                <div class="result-item fake">
+                                    <i class="fas fa-times-circle"></i>
+                                    <span>Deepfake Detected: 0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= UPLOAD SECTION ================= -->
+<section id="upload" class="upload-section">
+    <div class="container">
+        <div class="section-header text-center">
+            <h2>Upload & Analyze Media</h2>
+            <p class="section-subtitle">Drag and drop your files or click to browse. We support video, image, and audio formats.</p>
+        </div>
+        
+        <div class="upload-container">
+            <div class="upload-card">
+                <div class="upload-tabs">
+                    <button class="tab-btn active" data-type="video">
+                        <i class="fas fa-video"></i> Video
+                    </button>
+                    <button class="tab-btn" data-type="image">
+                        <i class="fas fa-image"></i> Image
+                    </button>
+                    <button class="tab-btn" data-type="audio">
+                        <i class="fas fa-microphone"></i> Audio
+                    </button>
+                </div>
+                
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3>Drag & Drop Files Here</h3>
+                    <p class="upload-hint">Supported formats: MP4, MOV, AVI, MP3, WAV, PNG, JPG (Max 500MB)</p>
+                    
+                    <div class="file-input-wrapper">
+                        <input type="file" id="mediaInput" accept="video/*,image/*,audio/*" hidden>
+                        <label for="mediaInput" class="btn-upload">
+                            <i class="fas fa-folder-open"></i> Browse Files
+                        </label>
+                    </div>
+                    
+                    <div class="upload-features">
+                        <div class="feature">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Secure Analysis</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-bolt"></i>
+                            <span>Fast Processing</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Detailed Report</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="upload-login">
+                    <div class="login-prompt">
+                        <i class="fas fa-lock"></i>
+                        <div>
+                            <h4>Advanced Features Available</h4>
+                            <p>Login to access full analysis reports, history, and API access</p>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('login') }}" class="btn-login" id="loginPromptBtn">
+                        <i class="fas fa-sign-in-alt"></i> Login to Continue
+                    </a>
+                </div>
+            </div>
+            
+            <div class="upload-info">
+                <h3><i class="fas fa-lightbulb"></i> Tips for Best Results</h3>
+                <ul>
+                    <li>Use high-quality source files for better accuracy</li>
+                    <li>Video files should be at least 720p resolution</li>
+                    <li>Ensure good audio quality for voice analysis</li>
+                    <li>Files are automatically deleted after analysis</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= FEATURES ================= -->
+<section class="features-section">
+    <div class="container">
+        <div class="section-header text-center">
+            <h2>Why Choose DeepFake Shield</h2>
+            <p class="section-subtitle">Powered by cutting-edge AI technology for reliable deepfake detection</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h4>Advanced AI Algorithms</h4>
+                <p>Our neural networks are trained on millions of samples for superior detection accuracy.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h4>Real-Time Analysis</h4>
+                <p>Get results in seconds with our optimized processing pipeline.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h4>Privacy First</h4>
+                <p>Your files are processed securely and never stored on our servers.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h4>Detailed Analytics</h4>
+                <p>Comprehensive reports with confidence scores and detection markers.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= HOW IT WORKS ================= -->
+<section class="how-it-works">
+    <div class="container">
+        <div class="section-header text-center">
+            <h2>Simple Three-Step Process</h2>
+            <p class="section-subtitle">Easily verify any media file in minutes</p>
+        </div>
+        
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>Upload Your Media</h4>
+                    <p>Drag and drop or select your video, image, or audio file</p>
+                </div>
+                <div class="step-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>AI Analysis</h4>
+                    <p>Our system scans for manipulation patterns and anomalies</p>
+                </div>
+                <div class="step-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>Get Results</h4>
+                    <p>Receive detailed authenticity report with confidence scores</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= ENHANCED FOOTER ================= -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="footer-logo">
+                    <img width="40" src="{{ url_for('static', filename='161966489-jf-initial-letter-vector-logo-icon.jpg') }}" alt="DeepFake Shield Logo">
+                    <span>DeepFake <span>Shield</span></span>
+                </div>
+                <p class="footer-description">
+                    Advanced AI platform for detecting and preventing deepfake media manipulation. 
+                    We provide cutting-edge technology to verify media authenticity in the digital age.
+                </p>
+                <div class="social-links">
+                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+                
+                <div class="newsletter-form">
+                    <p>Subscribe to our newsletter for updates</p>
+                    <div class="newsletter-input-group">
+                        <input type="email" class="newsletter-input" placeholder="Your email address">
+                        <button class="newsletter-btn">
+                            <i class="fas fa-paper-plane"></i> Subscribe
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h5>Product</h5>
+                <a href="{{ url_for('analysis') }}"><i class="fas fa-search"></i> Media Analysis</a>
+                <a href="#"><i class="fas fa-code"></i> API Documentation</a>
+                <a href="#"><i class="fas fa-tag"></i> Pricing</a>
+                <a href="#"><i class="fas fa-history"></i> Changelog</a>
+                <a href="#"><i class="fas fa-mobile-alt"></i> Mobile App</a>
+            </div>
+            
+            <div class="footer-col">
+                <h5>Company</h5>
+                <a href="{{ url_for('about') }}"><i class="fas fa-info-circle"></i> About Us</a>
+                <a href="{{ url_for('contact') }}"><i class="fas fa-envelope"></i> Contact</a>
+                <a href="#"><i class="fas fa-blog"></i> Blog</a>
+                <a href="#"><i class="fas fa-briefcase"></i> Careers</a>
+                <a href="#"><i class="fas fa-newspaper"></i> Press</a>
+            </div>
+            
+            <div class="footer-col">
+                <h5>Legal</h5>
+                <a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a>
+                <a href="#"><i class="fas fa-file-contract"></i> Terms of Service</a>
+                <a href="#"><i class="fas fa-cookie-bite"></i> Cookie Policy</a>
+                <a href="#"><i class="fas fa-gavel"></i> GDPR Compliance</a>
+                <a href="#"><i class="fas fa-balance-scale"></i> Legal Notice</a>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 DeepFake Shield. All rights reserved.</p>
+            <div class="credits">
+                <span><i class="fas fa-code"></i> Developed by: @SIMON JACOB A, @ARVIND M, @SANTHOSH G</span>
+                <span><i class="fas fa-map-marker-alt"></i> Based in India</span>
+                <span><i class="fas fa-envelope"></i> contact@deepfakeshield.com</span>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- ================= BANNER ================= -->
+<div class="info-banner">
+    <div class="banner-content">
+        <i class="fas fa-exclamation-circle"></i>
+        <span>Deepfake detection is crucial for digital security in the age of AI-generated content.</span>
+        <a href="{{ url_for('about') }}" class="banner-link">Learn More →</a>
+    </div>
+</div>
+
+<!-- ================= SCRIPTS ================= -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // ========== PERSISTENT LOGIN SYSTEM FOR ALL PAGES ==========
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check login state on page load
+        const loggedInUser = localStorage.getItem('deepfakeUser');
+        
+        if (loggedInUser) {
+            const user = JSON.parse(loggedInUser);
+            updateNavbarForLoggedInUser(user);
+            updateMobileMenuForLoggedInUser(user);
+            updateUploadSectionForLoggedInUser(user);
+        } else {
+            updateNavbarForLoggedOutUser();
+            updateMobileMenuForLoggedOutUser();
+        }
+
+        // Listen for login/logout events from OTHER pages/tabs
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'deepfakeUser') {
+                if (e.newValue) {
+                    const user = JSON.parse(e.newValue);
+                    updateNavbarForLoggedInUser(user);
+                    updateMobileMenuForLoggedInUser(user);
+                    updateUploadSectionForLoggedInUser(user);
+                } else {
+                    updateNavbarForLoggedOutUser();
+                    updateMobileMenuForLoggedOutUser();
+                    updateUploadSectionForLoggedOutUser();
+                }
+            }
+        });
+
+        // Custom event for same-page updates
+        window.addEventListener('loginStateChanged', function(e) {
+            if (e.detail.loggedIn) {
+                updateNavbarForLoggedInUser(e.detail.user);
+                updateMobileMenuForLoggedInUser(e.detail.user);
+                updateUploadSectionForLoggedInUser(e.detail.user);
+            } else {
+                updateNavbarForLoggedOutUser();
+                updateMobileMenuForLoggedOutUser();
+                updateUploadSectionForLoggedOutUser();
+            }
+        });
+
+        // Set active nav link based on current page
+        function setActiveNavLink() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                
+                const linkPath = link.getAttribute('href');
+                if (linkPath === currentPath || 
+                    (currentPath === '/' && linkPath.includes('home')) ||
+                    (currentPath === '' && linkPath.includes('home'))) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        
+        setActiveNavLink();
+        
+        // Tab switching
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const type = this.dataset.type;
+                const fileInput = document.getElementById('mediaInput');
+                
+                switch(type) {
+                    case 'video':
+                        fileInput.accept = 'video/*';
+                        break;
+                    case 'image':
+                        fileInput.accept = 'image/*';
+                        break;
+                    case 'audio':
+                        fileInput.accept = 'audio/*';
+                        break;
+                }
+            });
+        });
+        
+        // File upload interactions
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('mediaInput');
+        
+        uploadArea.addEventListener('click', () => fileInput.click());
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                handleFileSelect();
+            }
+        });
+        
+        fileInput.addEventListener('change', handleFileSelect);
+        
+        function handleFileSelect() {
+            const loggedInUser = localStorage.getItem('deepfakeUser');
+            
+            if (fileInput.files.length) {
+                const file = fileInput.files[0];
+                const fileName = file.name;
+                const fileSize = (file.size / (1024 * 1024)).toFixed(2);
+                
+                if (loggedInUser) {
+                    // User is logged in - show analyze button
+                    uploadArea.innerHTML = `
+                        <div class="upload-success">
+                            <i class="fas fa-check-circle"></i>
+                            <h3>Ready for Analysis</h3>
+                            <p class="file-name">${fileName}</p>
+                            <p class="file-size">${fileSize} MB</p>
+                            <div class="upload-actions">
+                                <a href="{{ url_for('analysis') }}" class="btn-analyze">
+                                    <i class="fas fa-search"></i> Analyze Now
+                                </a>
+                                <button class="btn-change" onclick="resetUpload()">
+                                    <i class="fas fa-redo"></i> Change File
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // User is not logged in - show login prompt
+                    uploadArea.innerHTML = `
+                        <div class="upload-success">
+                            <i class="fas fa-check-circle"></i>
+                            <h3>Ready for Analysis</h3>
+                            <p class="file-name">${fileName}</p>
+                            <p class="file-size">${fileSize} MB</p>
+                            <div class="upload-actions">
+                                <a href="{{ url_for('login') }}" class="btn-analyze">
+                                    <i class="fas fa-search"></i> Login to Analyze
+                                </a>
+                                <button class="btn-change" onclick="resetUpload()">
+                                    <i class="fas fa-redo"></i> Change File
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+        }
+        
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Mobile menu toggle
+        const menuIcon = document.querySelector('.menuIcon');
+        const overlayMenu = document.querySelector('.overlay-menu');
+        const body = document.body;
+        
+        menuIcon.addEventListener('click', function() {
+            this.classList.toggle('toggle');
+            overlayMenu.classList.toggle('show');
+            
+            if (overlayMenu.classList.contains('show')) {
+                body.style.overflow = 'hidden';
+            } else {
+                body.style.overflow = '';
+            }
+        });
+        
+        // Close mobile menu when clicking links
+        document.querySelectorAll('.overlay-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                menuIcon.classList.remove('toggle');
+                overlayMenu.classList.remove('show');
+                body.style.overflow = '';
+            });
+        });
+        
+        // Close mobile menu when clicking outside
+        overlayMenu.addEventListener('click', (e) => {
+            if (e.target === overlayMenu) {
+                menuIcon.classList.remove('toggle');
+                overlayMenu.classList.remove('show');
+                body.style.overflow = '';
+            }
+        });
+        
+        // Close mobile menu on ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && overlayMenu.classList.contains('show')) {
+                menuIcon.classList.remove('toggle');
+                overlayMenu.classList.remove('show');
+                body.style.overflow = '';
+            }
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href === '#') return;
+                
+                e.preventDefault();
+                const targetElement = document.querySelector(href);
+                if (targetElement) {
+                    const navbarHeight = document.getElementById('navbar').offsetHeight;
+                    window.scrollTo({
+                        top: targetElement.offsetTop - navbarHeight,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Add hover effects to buttons
+        const allButtons = document.querySelectorAll('.btn-primary, .btn-secondary, .btn-upload, .btn-login, .btn-analyze, .btn-change');
+        allButtons.forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+        
+        // Animate stats counter
+        const statItems = document.querySelectorAll('.stat-item h3');
+        const observerOptions = {
+            threshold: 0.5
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const stat = entry.target;
+                    const finalValue = parseFloat(stat.textContent);
+                    let startValue = 0;
+                    const duration = 2000;
+                    const increment = finalValue / (duration / 16);
+                    
+                    const timer = setInterval(() => {
+                        startValue += increment;
+                        if (startValue >= finalValue) {
+                            stat.textContent = finalValue.toFixed(finalValue % 1 === 0 ? 0 : 1) + (stat.textContent.includes('%') ? '%' : '');
+                            clearInterval(timer);
+                        } else {
+                            stat.textContent = Math.floor(startValue) + (stat.textContent.includes('%') ? '%' : '');
+                        }
+                    }, 16);
+                    
+                    observer.unobserve(stat);
+                }
+            });
+        }, observerOptions);
+        
+        statItems.forEach(stat => observer.observe(stat));
+        
+        // Newsletter subscription
+        const newsletterBtn = document.querySelector('.newsletter-btn');
+        const newsletterInput = document.querySelector('.newsletter-input');
+        
+        if (newsletterBtn) {
+            newsletterBtn.addEventListener('click', function() {
+                const email = newsletterInput.value;
+                
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                
+                if (!email || !emailRegex.test(email)) {
+                    newsletterInput.style.borderColor = 'var(--danger)';
+                    newsletterInput.placeholder = 'Please enter a valid email';
+                    return;
+                }
+                
+                newsletterInput.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                newsletterInput.placeholder = 'Your email address';
+                
+                const successMsg = document.createElement('div');
+                successMsg.className = 'newsletter-success';
+                successMsg.innerHTML = '<i class="fas fa-check-circle"></i> Successfully subscribed!';
+                successMsg.style.cssText = 'background: rgba(0, 204, 102, 0.1); border: 1px solid rgba(0, 204, 102, 0.3); color: #00cc66; padding: 15px; border-radius: 12px; margin-top: 15px; text-align: center;';
+                
+                const form = newsletterBtn.closest('.newsletter-form');
+                form.appendChild(successMsg);
+                
+                newsletterInput.value = '';
+                
+                setTimeout(() => {
+                    successMsg.remove();
+                }, 3000);
+                
+                console.log('Subscribed email:', email);
+            });
+        }
+        
+        if (newsletterInput) {
+            newsletterInput.addEventListener('focus', function() {
+                this.style.borderColor = 'var(--accent)';
+            });
+            
+            newsletterInput.addEventListener('blur', function() {
+                this.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+            });
+        }
+    });
+
+    // Update navbar for logged in user
+    function updateNavbarForLoggedInUser(user) {
+        const authSection = document.getElementById('auth-section');
+        if (authSection) {
+            authSection.innerHTML = `
+                <div class="google-profile" onclick="toggleLogout(event)">
+                    <span class="profile-name">${user.name.split(' ')[0]}</span>
+                    <img src="${user.picture || 'https://via.placeholder.com/32'}" alt="${user.name}" class="profile-avatar" onerror="this.src='https://via.placeholder.com/32'">
+                    <div class="profile-dropdown">
+                        <button class="dropdown-item" onclick="logout(event)">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    // Update navbar for logged out user
+    function updateNavbarForLoggedOutUser() {
+        const authSection = document.getElementById('auth-section');
+        if (authSection) {
+            authSection.innerHTML = `
+                <a href="/login" class="nav-link login-btn"><i class="fas fa-sign-in-alt"></i> Login</a>
+            `;
+        }
+    }
+
+    // Update mobile menu for logged in user
+    function updateMobileMenuForLoggedInUser(user) {
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu) {
+            mobileMenu.innerHTML = `
+                <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/analysis"><i class="fas fa-search"></i> Analyze</a></li>
+                <li><a href="/social-feed"><i class="fas fa-newspaper"></i> Social Feed</a></li>
+                <li><a href="/about"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><div class="mobile-profile">
+                    <img src="${user.picture || 'https://via.placeholder.com/50'}" class="mobile-avatar" onerror="this.src='https://via.placeholder.com/50'">
+                    <div class="mobile-info">
+                        <div class="mobile-name">${user.name}</div>
+                        <div class="mobile-email">${user.email}</div>
+                    </div>
+                </div></li>
+                <li><a href="#" onclick="logout(event)" class="mobile-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            `;
+        }
+    }
+
+    // Update mobile menu for logged out user
+    function updateMobileMenuForLoggedOutUser() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu) {
+            mobileMenu.innerHTML = `
+                <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/analysis"><i class="fas fa-search"></i> Analyze</a></li>
+                <li><a href="/social-feed"><i class="fas fa-newspaper"></i> Social Feed</a></li>
+                <li><a href="/about"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><a href="/login" class="nav-link login-btn"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+            `;
+        }
+    }
+
+    // Update upload section for logged in user
+    function updateUploadSectionForLoggedInUser(user) {
+        const loginPromptBtn = document.getElementById('loginPromptBtn');
+        if (loginPromptBtn) {
+            loginPromptBtn.innerHTML = '<i class="fas fa-user"></i> Welcome, ' + user.name.split(' ')[0];
+            loginPromptBtn.href = '/analysis';
+            loginPromptBtn.classList.remove('btn-login');
+            loginPromptBtn.classList.add('btn-analyze');
+        }
+    }
+
+    // Update upload section for logged out user
+    function updateUploadSectionForLoggedOutUser() {
+        const loginPromptBtn = document.getElementById('loginPromptBtn');
+        if (loginPromptBtn) {
+            loginPromptBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login to Continue';
+            loginPromptBtn.href = '/login';
+            loginPromptBtn.classList.remove('btn-analyze');
+            loginPromptBtn.classList.add('btn-login');
+        }
+    }
+
+    // Toggle logout dropdown
+    window.toggleLogout = function(event) {
+        event.stopPropagation();
+        const dropdown = document.querySelector('.profile-dropdown');
+        if (dropdown) {
+            dropdown.classList.toggle('show');
+        }
+    };
+
+    // GLOBAL LOGOUT FUNCTION - Works across all pages
+    window.logout = function(event) {
+        if (event) event.stopPropagation();
+        
+        localStorage.removeItem('deepfakeUser');
+        
+        updateNavbarForLoggedOutUser();
+        updateMobileMenuForLoggedOutUser();
+        updateUploadSectionForLoggedOutUser();
+        
+        window.dispatchEvent(new CustomEvent('loginStateChanged', { 
+            detail: { loggedIn: false } 
+        }));
+        
+        const message = document.createElement('div');
+        message.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ff4444;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            animation: slideIn 0.3s ease;
+        `;
+        message.innerHTML = '<i class="fas fa-check-circle"></i> Logged out successfully!';
+        document.body.appendChild(message);
+        
+        setTimeout(() => {
+            message.remove();
+            window.location.href = '/';
+        }, 1500);
+    };
+
+    // Reset upload area
+    window.resetUpload = function() {
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('mediaInput');
+        
+        fileInput.value = '';
+        
+        uploadArea.innerHTML = `
+            <div class="upload-icon">
+                <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <h3>Drag & Drop Files Here</h3>
+            <p class="upload-hint">Supported formats: MP4, MOV, AVI, MP3, WAV, PNG, JPG (Max 500MB)</p>
+            
+            <div class="file-input-wrapper">
+                <input type="file" id="mediaInput" accept="video/*,image/*,audio/*" hidden>
+                <label for="mediaInput" class="btn-upload">
+                    <i class="fas fa-folder-open"></i> Browse Files
+                </label>
+            </div>
+            
+            <div class="upload-features">
+                <div class="feature">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Secure Analysis</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-bolt"></i>
+                    <span>Fast Processing</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Detailed Report</span>
+                </div>
+            </div>
+        `;
+        
+        // Reattach event listeners
+        document.getElementById('mediaInput').addEventListener('change', function() {
+            handleFileSelect();
+        });
+    };
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        const profile = document.querySelector('.google-profile');
+        const dropdown = document.querySelector('.profile-dropdown');
+        
+        if (profile && dropdown && !profile.contains(event.target)) {
+            dropdown.classList.remove('show');
+        }
+    });
+</script>
+</body>
+</html>

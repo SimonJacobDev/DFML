@@ -1,0 +1,10 @@
+transformers
+torchaudio
+librosa
+soundfile
+flask
+gunicorn
+torch
+torchvision
+fastapi
+uvicorn

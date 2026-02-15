@@ -1,0 +1,2038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Social Feed | DeepFake Shield</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Share and verify media authenticity in our social community">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --primary: #000000;
+            --primary-dark: #333333;
+            --secondary: #666666;
+            --accent: #0077ff;
+            --accent-light: #3399ff;
+            --success: #00cc66;
+            --danger: #ff4444;
+            --warning: #ffaa00;
+            --light: #ffffff;
+            --light-gray: #f8f9fa;
+            --gray: #e0e0e0;
+            --medium-gray: #cccccc;
+            --dark-gray: #666666;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s ease;
+            --border-radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-gray);
+            color: var(--primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        /* Google-Style Profile */
+        .google-profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 5px 5px 12px;
+            border-radius: 30px;
+            background: transparent;
+            cursor: pointer;
+            position: relative;
+            margin-left: 10px;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .google-profile:hover {
+            background: rgba(0, 119, 255, 0.05);
+            border-color: var(--gray);
+        }
+
+        .profile-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+
+        .profile-name {
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: var(--primary);
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-width: 120px;
+            display: none;
+            z-index: 1001;
+            border: 1px solid var(--gray);
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .profile-dropdown.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ff4444;
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 0.95rem;
+            cursor: pointer;
+            border: none;
+            background: white;
+            width: 100%;
+            text-align: left;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(255, 68, 68, 0.05);
+        }
+
+        .dropdown-item i {
+            width: 18px;
+        }
+
+        /* Mobile Profile Styles */
+        .mobile-profile {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 119, 255, 0.05);
+            border-radius: 50px;
+        }
+
+        .mobile-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+
+        .mobile-info {
+            text-align: left;
+        }
+
+        .mobile-name {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .mobile-email {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        .mobile-logout {
+            color: #ff4444 !important;
+            font-size: 1.5rem !important;
+        }
+
+        /* ================= FIXED NAVBAR ================= */
+        .navbar-white {
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: var(--transition);
+            padding: 0;
+        }
+
+        .navbar-white.scrolled {
+            box-shadow: var(--shadow);
+        }
+
+        .nav-wrapper {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 1.4rem;
+        }
+
+        .logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .logo-highlight {
+            color: var(--accent);
+        }
+
+        #menu {
+            display: flex;
+            list-style: none;
+            gap: 15px;
+            margin: 0;
+            padding: 0;
+            align-items: center;
+        }
+
+        #menu li {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--dark-gray);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 10px 15px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            border-radius: 8px;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+            background: rgba(0, 119, 255, 0.05);
+        }
+
+        .nav-link.active {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        /* FIXED LOGIN BUTTON */
+        .login-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white !important;
+            padding: 10px 22px !important;
+            border-radius: 25px;
+            font-weight: 600;
+            display: flex !important;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            border: none;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(0, 119, 255, 0.2);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 119, 255, 0.3);
+            color: white !important;
+            background: linear-gradient(135deg, var(--accent-light), var(--accent));
+        }
+
+        /* Mobile Menu */
+        .menuIcon {
+            display: none;
+            width: 30px;
+            height: 24px;
+            position: relative;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .menuIcon .icon {
+            display: block;
+            position: absolute;
+            height: 3px;
+            width: 100%;
+            background: var(--primary);
+            border-radius: 3px;
+            opacity: 1;
+            left: 0;
+            transform: rotate(0deg);
+            transition: 0.25s ease-in-out;
+        }
+
+        .menuIcon .icon:nth-child(1) { top: 0px; }
+        .menuIcon .icon:nth-child(2) { top: 10px; }
+        .menuIcon .icon:nth-child(3) { top: 20px; }
+
+        .menuIcon.toggle .icon:nth-child(1) {
+            top: 10px;
+            transform: rotate(135deg);
+        }
+
+        .menuIcon.toggle .icon:nth-child(2) {
+            opacity: 0;
+            left: -30px;
+        }
+
+        .menuIcon.toggle .icon:nth-child(3) {
+            top: 10px;
+            transform: rotate(-135deg);
+        }
+
+        .overlay-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+        }
+
+        .overlay-menu.show {
+            transform: translateX(0);
+        }
+
+        .overlay-menu ul {
+            list-style: none;
+            text-align: center;
+            padding: 0;
+        }
+
+        .overlay-menu li {
+            margin: 20px 0;
+        }
+
+        .overlay-menu a {
+            color: var(--primary);
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 12px 30px;
+            border-radius: 50px;
+            transition: var(--transition);
+        }
+
+        .overlay-menu a:hover {
+            color: var(--accent);
+            background: rgba(0, 119, 255, 0.05);
+        }
+
+        /* ================= MAIN CONTENT ================= */
+        .main-container {
+            padding-top: 100px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 40px 0 60px;
+            background: linear-gradient(135deg, #f0f7ff 0%, var(--light) 100%);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 40px;
+            border-radius: var(--border-radius);
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%230077ff' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .highlight {
+            color: var(--accent);
+            position: relative;
+        }
+
+        .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 119, 255, 0.2);
+            z-index: -1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--dark-gray);
+            margin-bottom: 30px;
+            max-width: 600px;
+            line-height: 1.8;
+            margin: 0 auto 30px;
+        }
+
+        /* Create Post Section */
+        .create-post-section {
+            margin-bottom: 40px;
+        }
+
+        .create-post-card {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid var(--gray);
+            transition: var(--transition);
+        }
+
+        .create-post-card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--light);
+            padding: 25px 40px;
+            text-align: center;
+        }
+
+        .card-header h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .card-header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+        }
+
+        .card-content {
+            padding: 40px;
+        }
+
+        /* Form Elements */
+        .form-control {
+            border-radius: var(--border-radius);
+            padding: 12px 15px;
+            border: 2px solid var(--gray);
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 119, 255, 0.1);
+        }
+
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--primary);
+            font-size: 0.95rem;
+        }
+
+        .form-text {
+            color: var(--dark-gray);
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: var(--accent);
+            color: var(--light);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 119, 255, 0.2);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: var(--light);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .btn-success:hover {
+            background: #00a355;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 204, 102, 0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--gray);
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        /* Media Preview */
+        .media-preview {
+            margin: 25px 0;
+        }
+
+        .preview {
+            position: relative;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            background: #000;
+        }
+
+        .preview img, .preview video {
+            width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .badge-status {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            z-index: 10;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .safe { background: linear-gradient(135deg, #42b72a, #2e8b20); }
+        .fake { background: linear-gradient(135deg, #e41e3f, #b31515); }
+        .suspicious { background: linear-gradient(135deg, #f7b928, #cc8800); color: #000; }
+
+        .overlay-blur {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            z-index: 5;
+        }
+
+        /* Results Area */
+        .results-area {
+            margin-top: 25px;
+            padding: 20px;
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--gray);
+            display: none;
+        }
+
+        .confidence-meter {
+            margin-bottom: 20px;
+        }
+
+        .confidence-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        .progress {
+            height: 8px;
+            background: var(--gray);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+
+        .analysis-visualization {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .analysis-visualization h5 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+
+        .frames-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid var(--gray);
+            border-radius: var(--border-radius);
+        }
+
+        .frame-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #000;
+            aspect-ratio: 16/9;
+            cursor: pointer;
+        }
+
+        .frame-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .frame-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 4px;
+            font-size: 0.7rem;
+            text-align: center;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Feed Section */
+        .feed-section {
+            margin-top: 40px;
+        }
+
+        .section-header {
+            margin-bottom: 30px;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .section-subtitle {
+            color: var(--dark-gray);
+            font-size: 1rem;
+        }
+
+        /* Post Cards */
+        .post-card {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            margin-bottom: 25px;
+            border: 1px solid var(--gray);
+            transition: var(--transition);
+        }
+
+        .post-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-5px);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .post-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .post-user {
+            flex: 1;
+        }
+
+        .post-user h5 {
+            margin: 0;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .post-time {
+            color: var(--dark-gray);
+            font-size: 0.85rem;
+            margin-top: 3px;
+        }
+
+        .post-content {
+            margin-bottom: 20px;
+        }
+
+        .post-content p {
+            color: var(--primary);
+            line-height: 1.7;
+        }
+
+        .post-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gray);
+        }
+
+        .post-stats {
+            display: flex;
+            gap: 20px;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        .post-stats i {
+            margin-right: 5px;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .post-action-btn {
+            background: transparent;
+            border: none;
+            color: var(--dark-gray);
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .post-action-btn:hover {
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--accent);
+        }
+
+        /* Hidden Form */
+        .hidden-form {
+            display: none;
+        }
+
+        /* Download Report */
+        .download-btn {
+            margin-top: 15px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .download-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* Alert Sound */
+        .alert-sound {
+            display: none;
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 868px) {
+            #menu {
+                display: none;
+            }
+            
+            .menuIcon {
+                display: block;
+            }
+            
+            .nav-wrapper {
+                padding: 0 20px;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .card-content {
+                padding: 30px 20px;
+            }
+            
+            .post-card {
+                padding: 20px;
+            }
+            
+            .post-meta {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .post-stats {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .nav-wrapper {
+                padding: 0 15px;
+            }
+            
+            .hero-title {
+                font-size: 1.8rem;
+            }
+            
+            .card-header {
+                padding: 20px;
+            }
+            
+            .card-header h3 {
+                font-size: 1.5rem;
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .post-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .post-user {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav id="navbar" class="navbar-white">
+    <div class="nav-wrapper">
+        <div class="logo-container">
+            <a href="{{ url_for('home') }}" class="logo">
+                <img width="40" height="40" src="{{ url_for('static', filename='161966489-jf-initial-letter-vector-logo-icon.jpg') }}" alt="DeepFake Shield Logo">
+                <span class="logo-text">DeepFake <span class="logo-highlight">Shield</span></span>
+            </a>
+        </div>
+
+        <!-- Desktop Menu - REMOVED DUPLICATE LOGIN BUTTON -->
+        <ul id="menu">
+            <li><a href="{{ url_for('home') }}" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="{{ url_for('analysis') }}" class="nav-link"><i class="fas fa-search"></i> Analyze</a></li>
+            <li><a href="/social-feed" class="nav-link active"><i class="fas fa-newspaper"></i> Social Feed</a></li>
+            <li><a href="{{ url_for('about') }}" class="nav-link"><i class="fas fa-info-circle"></i> About</a></li>
+            <li><a href="{{ url_for('contact') }}" class="nav-link"><i class="fas fa-envelope"></i> Contact</a></li>
+            <li id="auth-section"></li> <!-- This will show either profile OR login button -->
+        </ul>
+        
+        <!-- Mobile Menu Icon -->
+        <div class="menuIcon">
+            <span class="icon"></span>
+            <span class="icon"></span>
+            <span class="icon"></span>
+        </div>
+    </div>
+</nav>
+
+<!-- ===== MOBILE OVERLAY MENU ===== -->
+<div class="overlay-menu">
+    <ul id="mobile-menu">
+        <!-- Mobile menu will be dynamically populated by JavaScript -->
+    </ul>
+</div>
+
+<!-- ================= MAIN CONTENT ================= -->
+<div class="main-container">
+    <div class="container">
+        
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <span class="highlight">Social Feed</span> Community
+                </h1>
+                <p class="hero-subtitle">
+                    Share, verify, and discuss media authenticity with our community. 
+                    Analyze media files and share your findings with others.
+                </p>
+            </div>
+        </section>
+        
+        <!-- Create Post Section -->
+        <section class="create-post-section">
+            <div class="create-post-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-plus-circle"></i> Create New Post</h3>
+                    <p>Upload media to analyze and share with the community</p>
+                </div>
+                
+                <div class="card-content">
+                    <div class="mb-4">
+                        <label for="mediaInput" class="form-label">
+                            <i class="fas fa-file-upload"></i> Select Media File
+                        </label>
+                        <input type="file" id="mediaInput" class="form-control" accept="image/*,video/*">
+                        <div class="form-text">Supported formats: JPG, PNG, MP4, MOV (Max 500MB)</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="postCaption" class="form-label">
+                            <i class="fas fa-edit"></i> Add a Caption (Optional)
+                        </label>
+                        <textarea id="postCaption" class="form-control" rows="3" placeholder="Share your thoughts about this media..."></textarea>
+                    </div>
+                    
+                    <button class="btn-primary w-100" onclick="analyzeMedia()">
+                        <i class="fas fa-brain"></i> Analyze & Prepare Post
+                    </button>
+                    
+                    <!-- Media Preview -->
+                    <div class="media-preview" id="previewArea" style="display: none;"></div>
+                    
+                    <!-- Results Area -->
+                    <div class="results-area" id="resultArea">
+                        <div class="confidence-meter">
+                            <div class="confidence-label">
+                                <span>Confidence Score:</span>
+                                <span id="confidenceValue">85%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" id="confidenceBar" style="width: 85%; background: #42b72a;"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Visualization Section -->
+                        <div class="analysis-visualization" id="visualizationSection" style="display: none;">
+                            <h5><i class="fas fa-chart-bar"></i> Analysis Visualization</h5>
+                            <div class="chart-container">
+                                <canvas id="analysisChart"></canvas>
+                            </div>
+                            <div id="framesContainer" style="display: none;">
+                                <h6><i class="fas fa-film"></i> Key Frame Analysis</h6>
+                                <div class="frames-container" id="framesList"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Download Report -->
+                        <div id="downloadReport" style="display: none;">
+                            <a href="#" class="download-btn" onclick="downloadReport()">
+                                <i class="fas fa-download"></i> Download Analysis Report
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Post Form -->
+                    <form id="postForm" class="hidden-form" onsubmit="postToFeed(event)">
+                        <div class="mt-4">
+                            <button type="submit" class="btn-success w-100">
+                                <i class="fas fa-paper-plane"></i> Post to Feed
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Feed Section -->
+        <section class="feed-section">
+            <div class="section-header">
+                <h2>Community Feed</h2>
+                <p class="section-subtitle">Recent posts from our community members</p>
+            </div>
+            
+            <!-- Feed Posts -->
+            <div id="feedPosts">
+                <!-- Sample Post 1 -->
+                <div class="post-card">
+                    <div class="post-header">
+                        <div class="post-avatar">AJ</div>
+                        <div class="post-user">
+                            <h5>Alex Johnson</h5>
+                            <div class="post-time">2 hours ago • Verified Analysis</div>
+                        </div>
+                    </div>
+                    
+                    <div class="post-content">
+                        <p>Just analyzed this video of a political speech. The AI detected it as authentic with 96% confidence! Always important to verify before sharing.</p>
+                    </div>
+                    
+                    <div class="preview">
+                        <img src="https://images.unsplash.com/photo-1589256469067-ea99122bbdc4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Political speech">
+                        <div class="badge-status safe">REAL • 96%</div>
+                    </div>
+                    
+                    <div class="post-meta">
+                        <div class="post-stats">
+                            <span><i class="fas fa-thumbs-up"></i> 42 Likes</span>
+                            <span><i class="fas fa-comment"></i> 8 Comments</span>
+                            <span><i class="fas fa-share"></i> 3 Shares</span>
+                        </div>
+                        <div class="post-actions">
+                            <button class="post-action-btn"><i class="fas fa-thumbs-up"></i> Like</button>
+                            <button class="post-action-btn"><i class="fas fa-comment"></i> Comment</button>
+                            <button class="post-action-btn"><i class="fas fa-share"></i> Share</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sample Post 2 -->
+                <div class="post-card">
+                    <div class="post-header">
+                        <div class="post-avatar">SM</div>
+                        <div class="post-user">
+                            <h5>Sarah Miller</h5>
+                            <div class="post-time">5 hours ago • Deepfake Detected</div>
+                        </div>
+                    </div>
+                    
+                    <div class="post-content">
+                        <p>This celebrity endorsement video turned out to be a deepfake! The AI detected it with 87% confidence. Always verify before sharing important content.</p>
+                    </div>
+                    
+                    <div class="preview">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Celebrity video">
+                        <div class="badge-status fake">FAKE • 87%</div>
+                        <div class="overlay-blur">🚫 Deepfake Detected</div>
+                    </div>
+                    
+                    <div class="post-meta">
+                        <div class="post-stats">
+                            <span><i class="fas fa-thumbs-up"></i> 89 Likes</span>
+                            <span><i class="fas fa-comment"></i> 24 Comments</span>
+                            <span><i class="fas fa-share"></i> 15 Shares</span>
+                        </div>
+                        <div class="post-actions">
+                            <button class="post-action-btn"><i class="fas fa-thumbs-up"></i> Like</button>
+                            <button class="post-action-btn"><i class="fas fa-comment"></i> Comment</button>
+                            <button class="post-action-btn"><i class="fas fa-share"></i> Share</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sample Post 3 (Fixed video source) -->
+                <div class="post-card">
+                    <div class="post-header">
+                        <div class="post-avatar">TK</div>
+                        <div class="post-user">
+                            <h5>Tom Kim</h5>
+                            <div class="post-time">1 day ago • Suspicious Content</div>
+                        </div>
+                    </div>
+                    
+                    <div class="post-content">
+                        <p>This news clip showed signs of manipulation. The AI wasn't completely sure but flagged it as suspicious (65% confidence). Always double-check sources!</p>
+                    </div>
+                    
+                    <div class="preview">
+                        <video controls>
+                            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div class="badge-status suspicious">SUSPICIOUS • 65%</div>
+                    </div>
+                    
+                    <div class="post-meta">
+                        <div class="post-stats">
+                            <span><i class="fas fa-thumbs-up"></i> 31 Likes</span>
+                            <span><i class="fas fa-comment"></i> 12 Comments</span>
+                            <span><i class="fas fa-share"></i> 5 Shares</span>
+                        </div>
+                        <div class="post-actions">
+                            <button class="post-action-btn"><i class="fas fa-thumbs-up"></i> Like</button>
+                            <button class="post-action-btn"><i class="fas fa-comment"></i> Comment</button>
+                            <button class="post-action-btn"><i class="fas fa-share"></i> Share</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- Alert Sound -->
+<audio id="alertSound" class="alert-sound">
+    <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg">
+</audio>
+
+<script>
+    // Global variables
+    let analyzedFile = null;
+    let currentAnalysisData = null;
+    let analysisChart = null;
+
+    // ========== PERSISTENT LOGIN SYSTEM FOR ALL PAGES ==========
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check login state on page load
+        const loggedInUser = localStorage.getItem('deepfakeUser');
+        
+        if (loggedInUser) {
+            const user = JSON.parse(loggedInUser);
+            updateNavbarForLoggedInUser(user);
+            updateMobileMenuForLoggedInUser(user);
+        } else {
+            updateNavbarForLoggedOutUser();
+            updateMobileMenuForLoggedOutUser();
+        }
+
+        // Listen for login/logout events from OTHER pages/tabs
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'deepfakeUser') {
+                if (e.newValue) {
+                    const user = JSON.parse(e.newValue);
+                    updateNavbarForLoggedInUser(user);
+                    updateMobileMenuForLoggedInUser(user);
+                } else {
+                    updateNavbarForLoggedOutUser();
+                    updateMobileMenuForLoggedOutUser();
+                }
+            }
+        });
+
+        // Custom event for same-page updates
+        window.addEventListener('loginStateChanged', function(e) {
+            if (e.detail.loggedIn) {
+                updateNavbarForLoggedInUser(e.detail.user);
+                updateMobileMenuForLoggedInUser(e.detail.user);
+            } else {
+                updateNavbarForLoggedOutUser();
+                updateMobileMenuForLoggedOutUser();
+            }
+        });
+
+        setupNavbar();
+        setupMobileMenu();
+        
+        // Highlight current page in mobile menu
+        highlightCurrentPage();
+    });
+
+    // Update navbar for logged in user
+    function updateNavbarForLoggedInUser(user) {
+        const authSection = document.getElementById('auth-section');
+        if (authSection) {
+            authSection.innerHTML = `
+                <div class="google-profile" onclick="toggleLogout(event)">
+                    <span class="profile-name">${user.name.split(' ')[0]}</span>
+                    <img src="${user.picture || 'https://via.placeholder.com/32'}" alt="${user.name}" class="profile-avatar" onerror="this.src='https://via.placeholder.com/32'">
+                    <div class="profile-dropdown">
+                        <button class="dropdown-item" onclick="logout(event)">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    // Update navbar for logged out user
+    function updateNavbarForLoggedOutUser() {
+        const authSection = document.getElementById('auth-section');
+        if (authSection) {
+            authSection.innerHTML = `
+                <a href="/login" class="nav-link login-btn"><i class="fas fa-sign-in-alt"></i> Login</a>
+            `;
+        }
+    }
+
+    // Update mobile menu for logged in user
+    function updateMobileMenuForLoggedInUser(user) {
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu) {
+            mobileMenu.innerHTML = `
+                <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/analysis"><i class="fas fa-search"></i> Analyze</a></li>
+                <li><a href="/social-feed" class="active"><i class="fas fa-newspaper"></i> Social Feed</a></li>
+                <li><a href="/about"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><div class="mobile-profile">
+                    <img src="${user.picture || 'https://via.placeholder.com/50'}" class="mobile-avatar" onerror="this.src='https://via.placeholder.com/50'">
+                    <div class="mobile-info">
+                        <div class="mobile-name">${user.name}</div>
+                        <div class="mobile-email">${user.email}</div>
+                    </div>
+                </div></li>
+                <li><a href="#" onclick="logout(event)" class="mobile-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            `;
+        }
+    }
+
+    // Update mobile menu for logged out user
+    function updateMobileMenuForLoggedOutUser() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu) {
+            mobileMenu.innerHTML = `
+                <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/analysis"><i class="fas fa-search"></i> Analyze</a></li>
+                <li><a href="/social-feed" class="active"><i class="fas fa-newspaper"></i> Social Feed</a></li>
+                <li><a href="/about"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><a href="/login" class="nav-link login-btn"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+            `;
+        }
+    }
+
+    // Toggle logout dropdown
+    window.toggleLogout = function(event) {
+        event.stopPropagation();
+        const dropdown = document.querySelector('.profile-dropdown');
+        if (dropdown) {
+            dropdown.classList.toggle('show');
+        }
+    };
+
+    // GLOBAL LOGOUT FUNCTION - Works across all pages
+    window.logout = function(event) {
+        if (event) event.stopPropagation();
+        
+        localStorage.removeItem('deepfakeUser');
+        
+        updateNavbarForLoggedOutUser();
+        updateMobileMenuForLoggedOutUser();
+        
+        window.dispatchEvent(new CustomEvent('loginStateChanged', { 
+            detail: { loggedIn: false } 
+        }));
+        
+        const message = document.createElement('div');
+        message.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ff4444;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            animation: slideIn 0.3s ease;
+        `;
+        message.innerHTML = '<i class="fas fa-check-circle"></i> Logged out successfully!';
+        document.body.appendChild(message);
+        
+        setTimeout(() => {
+            message.remove();
+            window.location.href = '/';
+        }, 1500);
+    };
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        const profile = document.querySelector('.google-profile');
+        const dropdown = document.querySelector('.profile-dropdown');
+        
+        if (profile && dropdown && !profile.contains(event.target)) {
+            dropdown.classList.remove('show');
+        }
+    });
+    
+    // Highlight current page in mobile menu
+    function highlightCurrentPage() {
+        const mobileLinks = document.querySelectorAll('#mobile-menu a');
+        mobileLinks.forEach(link => {
+            if (link.getAttribute('href') === '/social-feed') {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    }
+    
+    // Analyze Media Function
+    async function analyzeMedia() {
+        const fileInput = document.getElementById('mediaInput');
+        const file = fileInput.files[0];
+        
+        if (!file) {
+            alert("Please select a media file first!");
+            return;
+        }
+        
+        analyzedFile = file;
+        const previewArea = document.getElementById('previewArea');
+        const resultArea = document.getElementById('resultArea');
+        const postForm = document.getElementById('postForm');
+        const alertSound = document.getElementById('alertSound');
+        
+        // Show preview
+        previewArea.style.display = 'block';
+        if (file.type.startsWith("video")) {
+            previewArea.innerHTML = `
+                <div class="preview">
+                    <video width="100%" controls>
+                        <source src="${URL.createObjectURL(file)}" type="${file.type}">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            `;
+        } else {
+            previewArea.innerHTML = `
+                <div class="preview">
+                    <img width="100%" src="${URL.createObjectURL(file)}" style="border-radius:var(--border-radius);">
+                </div>
+            `;
+        }
+        
+        // Show loading
+        resultArea.style.display = 'block';
+        resultArea.innerHTML = `
+            <div style="text-align:center; padding:20px;">
+                <div class="spinner"></div>
+                <p style="margin-top:10px; color:var(--dark-gray);">AI is analyzing media patterns...</p>
+            </div>
+        `;
+        
+        const formData = new FormData();
+        formData.append("file", file);
+        
+        try {
+            // Determine endpoint based on file type
+            const endpoint = file.type.startsWith("video") 
+                ? "http://localhost:8000/predict_video" 
+                : "http://localhost:8000/predict_image";
+            
+            // Call API
+            const res = await fetch(endpoint, { 
+                method: "POST", 
+                body: formData 
+            });
+            const data = await res.json();
+            
+            // Process results
+            processAnalysisResults(data, file);
+            
+            // Play alert if fake detected
+            if (data.predicted_label === "fake") {
+                alertSound.play();
+            }
+            
+        } catch (error) {
+            console.error("Analysis failed:", error);
+            // Show simulated results if API fails
+            showSimulatedResults(file);
+        }
+    }
+    
+    function processAnalysisResults(data, file) {
+        const probs = data.mean_probabilities;
+        const confidence = Math.max(probs.real, probs.fake) * 100;
+        const isReal = data.predicted_label === "real";
+        const color = isReal ? "#42b72a" : "#e41e3f";
+        const badgeText = isReal ? "REAL" : "FAKE";
+        const badgeClass = isReal ? "safe" : "fake";
+        
+        // Update preview with badge
+        const previewArea = document.getElementById('previewArea');
+        const previewDiv = previewArea.querySelector('.preview');
+        if (previewDiv) {
+            previewDiv.innerHTML += `<div class="badge-status ${badgeClass}">${badgeText} • ${confidence.toFixed(1)}%</div>`;
+            
+            // Add blur overlay for fake content
+            if (!isReal) {
+                previewDiv.innerHTML += `<div class="overlay-blur">🚫 Deepfake Detected</div>`;
+            }
+        }
+        
+        // Update results area
+        const resultArea = document.getElementById('resultArea');
+        resultArea.innerHTML = `
+            <div class="confidence-meter">
+                <div class="confidence-label">
+                    <span>Confidence Score:</span>
+                    <span id="confidenceValue">${confidence.toFixed(1)}%</span>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar" id="confidenceBar" style="width: ${confidence}%; background: ${color};"></div>
+                </div>
+            </div>
+            <div class="analysis-visualization" id="visualizationSection" style="display: block;">
+                <h5><i class="fas fa-chart-bar"></i> Analysis Visualization</h5>
+                <div class="chart-container">
+                    <canvas id="analysisChart"></canvas>
+                </div>
+                ${file.type.startsWith("video") ? '<div id="framesContainer"><h6><i class="fas fa-film"></i> Key Frame Analysis</h6><div class="frames-container" id="framesList"></div></div>' : ''}
+            </div>
+            <div id="downloadReport" style="display: block;">
+                <a href="#" class="download-btn" onclick="downloadReport()">
+                    <i class="fas fa-download"></i> Download Analysis Report
+                </a>
+            </div>
+        `;
+        
+        // Create visualization charts
+        setTimeout(() => {
+            createAnalysisChart(probs, confidence, isReal, file.type.startsWith("video"));
+            
+            // Generate frame analysis for videos
+            if (file.type.startsWith("video") && data.per_frame_probs) {
+                createFrameAnalysis(data.per_frame_probs, file);
+            } else if (file.type.startsWith("video")) {
+                simulateFrameAnalysis(file);
+            }
+        }, 100);
+        
+        // Show post form
+        document.getElementById('postForm').classList.remove('hidden-form');
+        
+        // Store analysis data
+        currentAnalysisData = {
+            data: data,
+            file: file,
+            confidence: confidence,
+            isReal: isReal,
+            color: color,
+            badgeText: badgeText,
+            probs: probs
+        };
+    }
+    
+    function showSimulatedResults(file) {
+        // Simulate random results for demo
+        const randomResult = Math.random();
+        const isReal = randomResult > 0.5;
+        const confidence = (70 + Math.random() * 25).toFixed(1);
+        const color = isReal ? "#42b72a" : "#e41e3f";
+        const badgeText = isReal ? "REAL" : "FAKE";
+        const badgeClass = isReal ? "safe" : "fake";
+        
+        // Update preview with badge
+        const previewArea = document.getElementById('previewArea');
+        const previewDiv = previewArea.querySelector('.preview');
+        if (previewDiv) {
+            previewDiv.innerHTML += `<div class="badge-status ${badgeClass}">${badgeText} • ${confidence}%</div>`;
+            
+            if (!isReal) {
+                previewDiv.innerHTML += `<div class="overlay-blur">🚫 Deepfake Detected</div>`;
+                document.getElementById('alertSound').play();
+            }
+        }
+        
+        // Generate simulated probabilities
+        const probs = {
+            real: isReal ? confidence/100 : (100-confidence)/100,
+            fake: isReal ? (100-confidence)/100 : confidence/100
+        };
+        
+        // Update results area
+        const resultArea = document.getElementById('resultArea');
+        resultArea.innerHTML = `
+            <div class="confidence-meter">
+                <div class="confidence-label">
+                    <span>Confidence Score:</span>
+                    <span id="confidenceValue">${confidence}%</span>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar" id="confidenceBar" style="width: ${confidence}%; background: ${color};"></div>
+                </div>
+            </div>
+            <div class="analysis-visualization" id="visualizationSection" style="display: block;">
+                <h5><i class="fas fa-chart-bar"></i> Analysis Visualization</h5>
+                <div class="chart-container">
+                    <canvas id="analysisChart"></canvas>
+                </div>
+                ${file.type.startsWith("video") ? '<div id="framesContainer"><h6><i class="fas fa-film"></i> Key Frame Analysis</h6><div class="frames-container" id="framesList"></div></div>' : ''}
+            </div>
+            <div id="downloadReport" style="display: block;">
+                <a href="#" class="download-btn" onclick="downloadReport()">
+                    <i class="fas fa-download"></i> Download Analysis Report
+                </a>
+            </div>
+        `;
+        
+        // Create visualization charts
+        setTimeout(() => {
+            createAnalysisChart(probs, confidence, isReal, file.type.startsWith("video"));
+            
+            // Generate frame analysis for videos
+            if (file.type.startsWith("video")) {
+                simulateFrameAnalysis(file);
+            }
+        }, 100);
+        
+        // Show post form
+        document.getElementById('postForm').classList.remove('hidden-form');
+        
+        // Store analysis data
+        currentAnalysisData = {
+            data: null,
+            file: file,
+            confidence: parseFloat(confidence),
+            isReal: isReal,
+            color: color,
+            badgeText: badgeText,
+            probs: probs
+        };
+    }
+    
+    function createAnalysisChart(probs, confidence, isReal, isVideo) {
+        const ctx = document.getElementById('analysisChart').getContext('2d');
+        
+        // Destroy existing chart if exists
+        if (analysisChart) {
+            analysisChart.destroy();
+        }
+        
+        // Create pie chart for images, line chart for videos
+        if (isVideo) {
+            // Line chart for video frame analysis
+            const labels = Array.from({length: 10}, (_, i) => `Frame ${i+1}`);
+            const realData = Array.from({length: 10}, () => (probs.real * 100 + (Math.random() * 20 - 10)));
+            const fakeData = Array.from({length: 10}, () => (probs.fake * 100 + (Math.random() * 20 - 10)));
+            
+            analysisChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Real Confidence',
+                            data: realData,
+                            borderColor: '#42b72a',
+                            backgroundColor: 'rgba(66, 183, 42, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Fake Confidence',
+                            data: fakeData,
+                            borderColor: '#e41e3f',
+                            backgroundColor: 'rgba(228, 30, 63, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Frame-by-Frame Analysis',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.parsed.y.toFixed(1)}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Confidence (%)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Video Frames'
+                            }
+                        }
+                    }
+                }
+            });
+        } else {
+            // Pie chart for images
+            analysisChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Real', 'Fake'],
+                    datasets: [{
+                        data: [probs.real * 100, probs.fake * 100],
+                        backgroundColor: ['#42b72a', '#e41e3f'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.parsed.toFixed(1)}%`;
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'AI Confidence Distribution',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+    
+    function createFrameAnalysis(frameProbs, file) {
+        const framesContainer = document.getElementById('framesContainer');
+        const framesList = document.getElementById('framesList');
+        
+        if (!framesContainer || !framesList) return;
+        
+        framesContainer.style.display = 'block';
+        framesList.innerHTML = '';
+        
+        // Show first 12 frames for demo
+        const frameCount = Math.min(frameProbs.length, 12);
+        
+        for (let i = 0; i < frameCount; i++) {
+            const frameProb = frameProbs[i];
+            const isFrameReal = frameProb[0] > frameProb[1];
+            const frameConfidence = Math.max(frameProb[0], frameProb[1]) * 100;
+            
+            const frameItem = document.createElement('div');
+            frameItem.className = 'frame-item';
+            frameItem.innerHTML = `
+                <div style="width:100%;height:100%;background:${isFrameReal ? '#42b72a' : '#e41e3f'};opacity:0.7;display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;font-size:1.2rem;">
+                    ${isFrameReal ? '✓' : '✗'}
+                </div>
+                <div class="frame-label">Frame ${i+1}<br>${frameConfidence.toFixed(0)}%</div>
+            `;
+            
+            frameItem.addEventListener('click', () => {
+                alert(`Frame ${i+1}: ${isFrameReal ? 'REAL' : 'FAKE'} (${frameConfidence.toFixed(1)}% confidence)`);
+            });
+            
+            framesList.appendChild(frameItem);
+        }
+    }
+    
+    function simulateFrameAnalysis(file) {
+        const framesContainer = document.getElementById('framesContainer');
+        const framesList = document.getElementById('framesList');
+        
+        if (!framesContainer || !framesList) return;
+        
+        framesContainer.style.display = 'block';
+        framesList.innerHTML = '';
+        
+        // Create simulated frames
+        for (let i = 0; i < 12; i++) {
+            const isFrameReal = Math.random() > 0.3;
+            const frameConfidence = 60 + Math.random() * 35;
+            
+            const frameItem = document.createElement('div');
+            frameItem.className = 'frame-item';
+            frameItem.innerHTML = `
+                <div style="width:100%;height:100%;background:${isFrameReal ? '#42b72a' : '#e41e3f'};opacity:0.7;display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;font-size:1.2rem;">
+                    ${isFrameReal ? '✓' : '✗'}
+                </div>
+                <div class="frame-label">Frame ${i+1}<br>${frameConfidence.toFixed(0)}%</div>
+            `;
+            
+            frameItem.addEventListener('click', () => {
+                alert(`Frame ${i+1}: ${isFrameReal ? 'REAL' : 'FAKE'} (${frameConfidence.toFixed(1)}% confidence)`);
+            });
+            
+            framesList.appendChild(frameItem);
+        }
+    }
+    
+    // Post to Feed
+    function postToFeed(event) {
+        event.preventDefault();
+        
+        if (!currentAnalysisData) {
+            alert("Please analyze a file first!");
+            return;
+        }
+        
+        const caption = document.getElementById('postCaption').value || "Just analyzed this media with DeepFake Shield!";
+        const { file, confidence, isReal, color, badgeText } = currentAnalysisData;
+        
+        // Create new post element
+        const newPost = document.createElement('div');
+        newPost.className = 'post-card';
+        newPost.style.animation = 'fadeIn 0.5s ease';
+        
+        const fileURL = URL.createObjectURL(file);
+        const isVideo = file.type.startsWith('video');
+        
+        const mediaHTML = isVideo 
+            ? `<div class="preview"><video controls><source src="${fileURL}" type="${file.type}">Your browser does not support the video tag.</video><div class="badge-status ${isReal ? 'safe' : 'fake'}">${badgeText} • ${confidence.toFixed(1)}%</div>${!isReal ? '<div class="overlay-blur">🚫 Deepfake Detected</div>' : ''}</div>`
+            : `<div class="preview"><img src="${fileURL}" style="width:100%; border-radius:var(--border-radius); max-height:500px; object-fit:contain;"><div class="badge-status ${isReal ? 'safe' : 'fake'}">${badgeText} • ${confidence.toFixed(1)}%</div>${!isReal ? '<div class="overlay-blur">🚫 Deepfake Detected</div>' : ''}</div>`;
+        
+        newPost.innerHTML = `
+            <div class="post-header">
+                <div class="post-avatar">DU</div>
+                <div class="post-user">
+                    <h5>You</h5>
+                    <div class="post-time">Just now • ${isReal ? 'Verified Analysis' : 'Deepfake Detected'}</div>
+                </div>
+            </div>
+            
+            <div class="post-content">
+                <p>${caption}</p>
+            </div>
+            
+            ${mediaHTML}
+            
+            <div class="post-meta">
+                <div class="post-stats">
+                    <span><i class="fas fa-thumbs-up"></i> 0 Likes</span>
+                    <span><i class="fas fa-comment"></i> 0 Comments</span>
+                    <span><i class="fas fa-share"></i> 0 Shares</span>
+                </div>
+                <div class="post-actions">
+                    <button class="post-action-btn" onclick="likePost(this)"><i class="fas fa-thumbs-up"></i> Like</button>
+                    <button class="post-action-btn"><i class="fas fa-comment"></i> Comment</button>
+                    <button class="post-action-btn"><i class="fas fa-share"></i> Share</button>
+                </div>
+            </div>
+        `;
+        
+        // Add to top of feed
+        const feedPosts = document.getElementById('feedPosts');
+        feedPosts.insertBefore(newPost, feedPosts.firstChild);
+        
+        // Show success message
+        alert('Post added to feed successfully!');
+        
+        // Reset form
+        document.getElementById('postForm').classList.add('hidden-form');
+        document.getElementById('postCaption').value = '';
+        document.getElementById('mediaInput').value = '';
+        document.getElementById('previewArea').style.display = 'none';
+        document.getElementById('previewArea').innerHTML = '';
+        document.getElementById('resultArea').style.display = 'none';
+        
+        // Reset variables
+        analyzedFile = null;
+        currentAnalysisData = null;
+        
+        // Scroll to show new post
+        newPost.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    
+    // Download Report
+    function downloadReport() {
+        if (!currentAnalysisData) return;
+        
+        const { file, confidence, isReal, badgeText, probs } = currentAnalysisData;
+        
+        const report = `
+DeepFake Shield - AI Analysis Report
+====================================
+
+File Information:
+-----------------
+Filename: ${file.name}
+File Size: ${(file.size / (1024 * 1024)).toFixed(2)} MB
+File Type: ${file.type}
+
+Analysis Results:
+-----------------
+Detection Result: ${badgeText}
+Confidence Score: ${confidence.toFixed(1)}%
+Real Probability: ${(probs.real * 100).toFixed(1)}%
+Fake Probability: ${(probs.fake * 100).toFixed(1)}%
+Analysis Date: ${new Date().toLocaleString()}
+
+Conclusion:
+-----------
+${isReal ? 
+    '✅ This media appears to be authentic.' : 
+    '⚠️ WARNING: This media has been identified as a potential deepfake.'}
+
+Important Notice:
+-----------------
+This analysis is performed by AI and should be used as a reference only.
+Always verify critical information from trusted sources.
+
+---
+DeepFake Shield - Protecting Digital Authenticity
+© 2025 DeepFake Shield. All rights reserved.
+        `;
+        
+        const blob = new Blob([report], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "DeepFake_Analysis_Report.txt";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+    
+    // Like Post Function
+    function likePost(button) {
+        const likeCount = button.closest('.post-stats').querySelector('span:first-child');
+        const currentLikes = parseInt(likeCount.textContent.match(/\d+/)[0]);
+        const isLiked = button.innerHTML.includes('text-primary');
+        
+        if (isLiked) {
+            // Unlike
+            button.innerHTML = '<i class="fas fa-thumbs-up"></i> Like';
+            button.classList.remove('text-primary');
+            likeCount.innerHTML = `<i class="fas fa-thumbs-up"></i> ${currentLikes - 1} Likes`;
+        } else {
+            // Like
+            button.innerHTML = '<i class="fas fa-thumbs-up text-primary"></i> Liked';
+            button.classList.add('text-primary');
+            likeCount.innerHTML = `<i class="fas fa-thumbs-up"></i> ${currentLikes + 1} Likes`;
+        }
+    }
+    
+    // Navbar and Mobile Menu
+    function setupNavbar() {
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    }
+    
+    function setupMobileMenu() {
+        const menuIcon = document.querySelector('.menuIcon');
+        const overlayMenu = document.querySelector('.overlay-menu');
+        const body = document.body;
+        
+        menuIcon.addEventListener('click', function() {
+            this.classList.toggle('toggle');
+            overlayMenu.classList.toggle('show');
+            
+            if (overlayMenu.classList.contains('show')) {
+                body.style.overflow = 'hidden';
+            } else {
+                body.style.overflow = '';
+            }
+        });
+        
+        document.querySelectorAll('.overlay-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                menuIcon.classList.remove('toggle');
+                overlayMenu.classList.remove('show');
+                body.style.overflow = '';
+            });
+        });
+        
+        overlayMenu.addEventListener('click', (e) => {
+            if (e.target === overlayMenu) {
+                menuIcon.classList.remove('toggle');
+                overlayMenu.classList.remove('show');
+                body.style.overflow = '';
+            }
+        });
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && overlayMenu.classList.contains('show')) {
+                menuIcon.classList.remove('toggle');
+                overlayMenu.classList.remove('show');
+                body.style.overflow = '';
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact Us | DeepFake Shield</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Get in touch with DeepFake Shield team. Contact us for support, inquiries, or feedback about our AI-powered deepfake detection platform.">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #000000;
+            --primary-dark: #333333;
+            --secondary: #666666;
+            --accent: #0077ff;
+            --accent-light: #3399ff;
+            --light: #ffffff;
+            --light-gray: #f8f9fa;
+            --gray: #e0e0e0;
+            --dark-gray: #666666;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s ease;
+            --border-radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--light-gray) 0%, var(--light) 100%);
+            color: var(--primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        /* ================= FIXED NAVBAR ================= */
+        .navbar-white {
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: var(--transition);
+            padding: 0;
+        }
+
+        .navbar-white.scrolled {
+            box-shadow: var(--shadow);
+        }
+
+        .nav-wrapper {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 1.4rem;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .logo-highlight {
+            color: var(--accent);
+        }
+
+        #menu {
+            display: flex;
+            list-style: none;
+            gap: 15px;
+            margin: 0;
+            padding: 0;
+            align-items: center;
+        }
+
+        #menu li {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--dark-gray);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 10px 15px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            border-radius: 8px;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+            background: rgba(0, 119, 255, 0.05);
+        }
+
+        .nav-link.active {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        /* Google-Style Profile */
+        .google-profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 5px 5px 12px;
+            border-radius: 30px;
+            background: transparent;
+            cursor: pointer;
+            position: relative;
+            margin-left: 10px;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .google-profile:hover {
+            background: rgba(0, 119, 255, 0.05);
+            border-color: var(--gray);
+        }
+
+        .profile-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+
+        .profile-name {
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: var(--primary);
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-width: 120px;
+            display: none;
+            z-index: 1001;
+            border: 1px solid var(--gray);
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .profile-dropdown.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ff4444;
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 0.95rem;
+            cursor: pointer;
+            border: none;
+            background: white;
+            width: 100%;
+            text-align: left;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(255, 68, 68, 0.05);
+        }
+
+        .dropdown-item i {
+            width: 18px;
+        }
+
+        /* FIXED LOGIN BUTTON */
+        .login-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white !important;
+            padding: 10px 22px !important;
+            border-radius: 25px;
+            font-weight: 600;
+            display: flex !important;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            border: none;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(0, 119, 255, 0.2);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 119, 255, 0.3);
+            color: white !important;
+            background: linear-gradient(135deg, var(--accent-light), var(--accent));
+        }
+
+        /* Mobile Menu Icon */
+        .menuIcon {
+            display: none;
+            width: 30px;
+            height: 24px;
+            position: relative;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .menuIcon .icon {
+            display: block;
+            position: absolute;
+            height: 3px;
+            width: 100%;
+            background: var(--primary);
+            border-radius: 3px;
+            opacity: 1;
+            left: 0;
+            transform: rotate(0deg);
+            transition: 0.25s ease-in-out;
+        }
+
+        .menuIcon .icon:nth-child(1) {
+            top: 0px;
+        }
+
+        .menuIcon .icon:nth-child(2) {
+            top: 10px;
+        }
+
+        .menuIcon .icon:nth-child(3) {
+            top: 20px;
+        }
+
+        .menuIcon.toggle .icon:nth-child(1) {
+            top: 10px;
+            transform: rotate(135deg);
+        }
+
+        .menuIcon.toggle .icon:nth-child(2) {
+            opacity: 0;
+            left: -30px;
+        }
+
+        .menuIcon.toggle .icon:nth-child(3) {
+            top: 10px;
+            transform: rotate(-135deg);
+        }
+
+        /* Overlay Menu */
+        .overlay-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+        }
+
+        .overlay-menu.show {
+            transform: translateX(0);
+        }
+
+        .overlay-menu ul {
+            list-style: none;
+            text-align: center;
+            padding: 0;
+        }
+
+        .overlay-menu li {
+            margin: 20px 0;
+        }
+
+        .overlay-menu a {
+            color: var(--primary);
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 12px 30px;
+            border-radius: 50px;
+            transition: var(--transition);
+        }
+
+        .overlay-menu a:hover {
+            color: var(--accent);
+            background: rgba(0, 119, 255, 0.05);
+        }
+
+        .mobile-login-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(0, 119, 255, 0.2);
+        }
+
+        .mobile-login-btn:hover {
+            background: linear-gradient(135deg, var(--accent-light), var(--accent));
+            color: white !important;
+        }
+
+        /* Mobile User Profile */
+        .mobile-profile {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 119, 255, 0.05);
+            border-radius: 50px;
+        }
+
+        .mobile-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+
+        .mobile-info {
+            text-align: left;
+        }
+
+        .mobile-name {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .mobile-email {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        .mobile-logout {
+            color: #ff4444 !important;
+            font-size: 1.5rem !important;
+        }
+
+        /* ================= HERO SECTION ================= */
+        .contact-hero {
+            padding: 160px 0 80px;
+            background: linear-gradient(135deg, var(--light-gray) 0%, var(--light) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%230077ff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 3.2rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .highlight {
+            color: var(--accent);
+            position: relative;
+        }
+
+        .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 119, 255, 0.2);
+            z-index: -1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--dark-gray);
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        /* ================= CONTACT SECTION ================= */
+        .contact-section {
+            padding: 80px 0;
+            background: var(--light);
+        }
+
+        .contact-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .section-subtitle {
+            color: var(--dark-gray);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 50px;
+            margin-bottom: 80px;
+        }
+
+        @media (max-width: 992px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        .contact-info {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray);
+        }
+
+        .contact-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .contact-info h3 i {
+            color: var(--accent);
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 119, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .info-content h4 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .info-content p {
+            color: var(--dark-gray);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .info-content a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .info-content a:hover {
+            color: var(--accent-light);
+            text-decoration: underline;
+        }
+
+        .contact-form-container {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray);
+        }
+
+        .contact-form-container h3 {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .contact-form-container h3 i {
+            color: var(--accent);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--primary);
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid var(--gray);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--light);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 119, 255, 0.1);
+        }
+
+        .form-control::placeholder {
+            color: #999;
+        }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--light);
+            padding: 16px 32px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 1rem;
+            border: 2px solid var(--accent);
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary:hover {
+            background: var(--light);
+            color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            padding: 16px 32px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 1rem;
+            border: 2px solid var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        /* ================= FAQ SECTION ================= */
+        .faq-section {
+            padding: 80px 0;
+            background: var(--light-gray);
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .faq-item {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            border: 1px solid var(--gray);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .faq-item:hover {
+            border-color: var(--accent);
+        }
+
+        .faq-question {
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+
+        .faq-question i {
+            color: var(--accent);
+            transition: var(--transition);
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            padding: 0 30px;
+            max-height: 0;
+            overflow: hidden;
+            transition: var(--transition);
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 0 30px 25px;
+            max-height: 300px;
+        }
+
+        /* ================= ENHANCED FOOTER ================= */
+        .footer {
+            background: linear-gradient(135deg, #111111 0%, #1a1a1a 100%);
+            color: var(--light);
+            padding: 70px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--accent) 30%, 
+                var(--accent-light) 50%, 
+                var(--accent) 70%, 
+                transparent 100%);
+            opacity: 0.5;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 50px;
+            margin-bottom: 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-col:first-child {
+            max-width: 400px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .footer-logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            object-fit: cover;
+            box-shadow: 0 4px 12px rgba(0, 119, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-logo span {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--light);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .footer-logo span span {
+            color: var(--accent);
+        }
+
+        .footer-description {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            padding-right: 15px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .social-links a:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 119, 255, 0.3);
+        }
+
+        .footer-col h5 {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: var(--light);
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 8px;
+        }
+
+        .footer-col h5::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+        }
+
+        .footer-col a {
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            padding: 6px 0;
+        }
+
+        .footer-col a i {
+            margin-right: 10px;
+            width: 18px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+
+        .footer-col a:hover {
+            color: var(--light);
+            transform: translateX(5px);
+        }
+
+        .footer-col a:hover i {
+            color: var(--accent);
+        }
+
+        .newsletter-form {
+            margin-top: 20px;
+        }
+
+        .newsletter-form p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+
+        .newsletter-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--light);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .newsletter-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .newsletter-btn {
+            padding: 10px 20px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .newsletter-btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 25px 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-bottom p {
+            margin-bottom: 15px;
+        }
+
+        .credits {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .credits span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.8rem;
+        }
+
+        .credits i {
+            color: var(--accent);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 1200px) {
+            .nav-wrapper {
+                padding: 0 20px;
+            }
+            
+            #menu {
+                gap: 10px;
+            }
+            
+            .nav-link {
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+            
+            .login-btn {
+                padding: 9px 18px !important;
+                font-size: 0.9rem;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 2fr 1fr 1fr;
+                gap: 40px;
+            }
+            
+            .footer-col:last-child {
+                grid-column: 1 / -1;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 40px;
+            }
+            
+            .footer-col:first-child {
+                grid-column: 1 / -1;
+                max-width: 100%;
+                text-align: center;
+            }
+            
+            .footer-logo {
+                margin: 0 auto 25px;
+            }
+            
+            .footer-description {
+                padding-right: 0;
+            }
+            
+            .social-links {
+                justify-content: center;
+            }
+            
+            .newsletter-form {
+                max-width: 400px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 868px) {
+            #menu {
+                display: none;
+            }
+            
+            .menuIcon {
+                display: block;
+            }
+            
+            .nav-wrapper {
+                padding: 0 20px;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .logo {
+                font-size: 1.2rem;
+            }
+            
+            .logo img {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .overlay-menu a {
+                font-size: 1.5rem;
+                padding: 10px 25px;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .footer-col {
+                text-align: center;
+            }
+            
+            .footer-col h5::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .footer-col a {
+                justify-content: center;
+            }
+            
+            .footer-col a:hover {
+                transform: translateY(-2px);
+            }
+            
+            .newsletter-input-group {
+                flex-direction: column;
+            }
+            
+            .credits {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .contact-hero {
+                padding: 140px 0 60px;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .section-header h2 {
+                font-size: 2rem;
+            }
+            
+            .nav-wrapper {
+                padding: 0 15px;
+            }
+            
+            .logo-text {
+                font-size: 1.1rem;
+            }
+            
+            .overlay-menu a {
+                font-size: 1.3rem;
+                padding: 8px 20px;
+            }
+            
+            .footer {
+                padding: 50px 0 20px;
+            }
+            
+            .footer-logo {
+                padding: 10px 15px;
+            }
+            
+            .footer-logo img {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .footer-logo span {
+                font-size: 1.3rem;
+            }
+            
+            .social-links a {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .newsletter-btn {
+                justify-content: center;
+            }
+            
+            .contact-info,
+            .contact-form-container {
+                padding: 30px 20px;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .info-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .info-icon {
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ================= FIXED NAVBAR WITH GOOGLE-STYLE PROFILE ================= -->
+    <nav id="navbar" class="navbar-white">
+        <div class="nav-wrapper">
+            <div class="logo-container">
+                <a href="/" class="logo">
+                    <img src="{{ url_for('static', filename='161966489-jf-initial-letter-vector-logo-icon.jpg') }}" alt="DeepFake Shield Logo">
+                    <span class="logo-text">DeepFake <span class="logo-highlight">Shield</span></span>
+                </a>
+            </div>
+
+            <!-- Desktop Menu -->
+            <ul id="menu">
+                <li><a href="/" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/analysis" class="nav-link"><i class="fas fa-search"></i> Analyze</a></li>
+                <li><a href="/social-feed" class="nav-link"><i class="fas fa-newspaper"></i> Social Feed</a></li>
+                <li><a href="/about" class="nav-link"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="/contact" class="nav-link active"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li id="auth-section"></li>
+            </ul>
+            
+            <!-- Mobile Menu Icon -->
+            <div class="menuIcon">
+                <span class="icon"></span>
+                <span class="icon"></span>
+                <span class="icon"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Overlay Menu -->
+    <div class="overlay-menu">
+        <ul id="mobile-menu"></ul>
+    </div>
+
+    <!-- ================= HERO SECTION ================= -->
+    <section class="contact-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Get in <span class="highlight">Touch</span> With Us
+                </h1>
+                <p class="hero-subtitle">
+                    Have questions about deepfake detection? Need support with our platform?
+                    Our team is here to help you navigate the world of AI-powered media authenticity verification.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= CONTACT SECTION ================= -->
+    <section class="contact-section">
+        <div class="contact-container">
+            <div class="section-header">
+                <h2>Contact Information</h2>
+                <p class="section-subtitle">Reach out to us through any of these channels or fill out the contact form</p>
+            </div>
+
+            <div class="contact-grid">
+                <!-- Contact Info -->
+                <div class="contact-info">
+                    <h3><i class="fas fa-address-card"></i> Contact Details</h3>
+                    
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="info-content">
+                            <h4>Our Location</h4>
+                            <p>123 Tech Street<br>Chennai, Tamil Nadu 600001<br>India</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-phone"></i></div>
+                        <div class="info-content">
+                            <h4>Phone Number</h4>
+                            <p><a href="tel:+916383648953">+91 63836 48953</a><br>Monday - Friday: 9AM - 6PM IST</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-envelope"></i></div>
+                        <div class="info-content">
+                            <h4>Email Address</h4>
+                            <p><a href="mailto:asimonjacob@gmail.com">asimonjacob@gmail.com</a><br><a href="mailto:support@deepfakeshield.com">support@deepfakeshield.com</a></p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-clock"></i></div>
+                        <div class="info-content">
+                            <h4>Working Hours</h4>
+                            <p>Monday - Friday: 9:00 - 18:00<br>Saturday: 10:00 - 16:00<br>Sunday: Closed</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="contact-form-container">
+                    <h3><i class="fas fa-paper-plane"></i> Send Us a Message</h3>
+                    
+                    <form action="https://formsubmit.co/asimonjacob@gmail.com" method="POST">
+                        <input type="hidden" name="_captcha" value="false">
+                        <input type="hidden" name="_next" value="http://localhost:5000/contact?success=true">
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="name">Full Name *</label>
+                            <input type="text" id="name" name="name" class="form-control" placeholder="Enter your full name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="email">Email Address *</label>
+                            <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email address" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" class="form-control" placeholder="Enter your phone number">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="subject">Subject *</label>
+                            <select id="subject" name="subject" class="form-control" required>
+                                <option value="" disabled selected>Select a subject</option>
+                                <option value="general">General Inquiry</option>
+                                <option value="support">Technical Support</option>
+                                <option value="partnership">Business Partnership</option>
+                                <option value="media">Media Inquiry</option>
+                                <option value="feedback">Feedback & Suggestions</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="message">Message *</label>
+                            <textarea id="message" name="message" class="form-control" placeholder="Type your message here..." rows="5" required></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary"><i class="fas fa-paper-plane"></i> Send Message</button>
+                            <button type="reset" class="btn-secondary"><i class="fas fa-redo"></i> Clear Form</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= FAQ SECTION ================= -->
+    <section class="faq-section">
+        <div class="faq-container">
+            <div class="section-header">
+                <h2>Frequently Asked Questions</h2>
+                <p class="section-subtitle">Find quick answers to common questions about DeepFake Shield</p>
+            </div>
+
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How accurate is your deepfake detection technology?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Our AI-powered deepfake detection technology achieves 99.2% accuracy on benchmark datasets. We continuously train our models on diverse datasets to maintain high accuracy across various media types including videos, images, and audio.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Is my data secure when I upload media for analysis?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, we prioritize data security. All uploaded files are processed securely and automatically deleted after analysis. We don't store your media files permanently, and all transmissions are encrypted using industry-standard security protocols.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What file formats do you support for analysis?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We support a wide range of formats: MP4, MOV, AVI for videos; PNG, JPG, JPEG for images; and MP3, WAV for audio files. Maximum file size is 500MB. For best results, use high-quality source files with good resolution.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How long does the analysis process take?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Analysis time varies based on file size and type. On average, image analysis takes 2-5 seconds, audio files take 10-30 seconds, and video analysis takes 30-120 seconds for a 1-minute video. Registered users get priority processing.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Do you offer API access for developers?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, we offer API access for enterprise clients and developers. Our RESTful API allows integration of deepfake detection capabilities into your applications. Contact our sales team for pricing and access details.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= ENHANCED FOOTER ================= -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <img src="{{ url_for('static', filename='161966489-jf-initial-letter-vector-logo-icon.jpg') }}" alt="DeepFake Shield Logo">
+                        <span>DeepFake <span>Shield</span></span>
+                    </div>
+                    <p class="footer-description">
+                        Advanced AI platform for detecting and preventing deepfake media manipulation. 
+                        We provide cutting-edge technology to verify media authenticity in the digital age.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                    
+                    <div class="newsletter-form">
+                        <p>Subscribe to our newsletter for updates</p>
+                        <div class="newsletter-input-group">
+                            <input type="email" class="newsletter-input" placeholder="Your email address">
+                            <button class="newsletter-btn"><i class="fas fa-paper-plane"></i> Subscribe</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h5>Product</h5>
+                    <a href="/analysis"><i class="fas fa-search"></i> Media Analysis</a>
+                    <a href="#"><i class="fas fa-code"></i> API Documentation</a>
+                    <a href="#"><i class="fas fa-tag"></i> Pricing</a>
+                    <a href="#"><i class="fas fa-history"></i> Changelog</a>
+                    <a href="#"><i class="fas fa-mobile-alt"></i> Mobile App</a>
+                </div>
+                
+                <div class="footer-col">
+                    <h5>Company</h5>
+                    <a href="/about"><i class="fas fa-info-circle"></i> About Us</a>
+                    <a href="/contact"><i class="fas fa-envelope"></i> Contact</a>
+                    <a href="#"><i class="fas fa-blog"></i> Blog</a>
+                    <a href="#"><i class="fas fa-briefcase"></i> Careers</a>
+                    <a href="#"><i class="fas fa-newspaper"></i> Press</a>
+                </div>
+                
+                <div class="footer-col">
+                    <h5>Legal</h5>
+                    <a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a>
+                    <a href="#"><i class="fas fa-file-contract"></i> Terms of Service</a>
+                    <a href="#"><i class="fas fa-cookie-bite"></i> Cookie Policy</a>
+                    <a href="#"><i class="fas fa-gavel"></i> GDPR Compliance</a>
+                    <a href="#"><i class="fas fa-balance-scale"></i> Legal Notice</a>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 DeepFake Shield. All rights reserved.</p>
+                <div class="credits">
+                    <span><i class="fas fa-code"></i> Developed by: @SIMON JACOB A, @ARVIND M, @SANTHOSH G</span>
+                    <span><i class="fas fa-map-marker-alt"></i> Based in India</span>
+                    <span><i class="fas fa-envelope"></i> contact@deepfakeshield.com</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ================= PERSISTENT LOGIN SCRIPT ================= -->
+    <script>
+        // ========== PERSISTENT LOGIN SYSTEM FOR ALL PAGES ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check login state on page load
+            const loggedInUser = localStorage.getItem('deepfakeUser');
+            
+            if (loggedInUser) {
+                const user = JSON.parse(loggedInUser);
+                updateNavbarForLoggedInUser(user);
+                updateMobileMenuForLoggedInUser(user);
+            } else {
+                updateNavbarForLoggedOutUser();
+                updateMobileMenuForLoggedOutUser();
+            }
+
+            // Listen for login/logout events from OTHER pages/tabs
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'deepfakeUser') {
+                    if (e.newValue) {
+                        const user = JSON.parse(e.newValue);
+                        updateNavbarForLoggedInUser(user);
+                        updateMobileMenuForLoggedInUser(user);
+                    } else {
+                        updateNavbarForLoggedOutUser();
+                        updateMobileMenuForLoggedOutUser();
+                    }
+                }
+            });
+
+            // Navbar scroll effect
+            window.addEventListener('scroll', function() {
+                const navbar = document.getElementById('navbar');
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+
+            // Mobile menu toggle
+            const menuIcon = document.querySelector('.menuIcon');
+            const overlayMenu = document.querySelector('.overlay-menu');
+            const body = document.body;
+            
+            menuIcon.addEventListener('click', function() {
+                this.classList.toggle('toggle');
+                overlayMenu.classList.toggle('show');
+                body.style.overflow = overlayMenu.classList.contains('show') ? 'hidden' : '';
+            });
+            
+            // Close mobile menu when clicking links
+            document.querySelectorAll('.overlay-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    menuIcon.classList.remove('toggle');
+                    overlayMenu.classList.remove('show');
+                    body.style.overflow = '';
+                });
+            });
+
+            // FAQ Accordion
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    const faqItem = this.parentElement;
+                    faqItem.classList.toggle('active');
+                    
+                    faqQuestions.forEach(otherQuestion => {
+                        if (otherQuestion !== this) {
+                            otherQuestion.parentElement.classList.remove('active');
+                        }
+                    });
+                });
+            });
+
+            // Check for success parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('success') === 'true') {
+                alert('Thank you for your message! We will get back to you soon.');
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                const profile = document.querySelector('.google-profile');
+                const dropdown = document.querySelector('.profile-dropdown');
+                
+                if (profile && dropdown && !profile.contains(event.target)) {
+                    dropdown.classList.remove('show');
+                }
+            });
+        });
+
+        // Update navbar for logged in user
+        function updateNavbarForLoggedInUser(user) {
+            const authSection = document.getElementById('auth-section');
+            if (authSection) {
+                authSection.innerHTML = `
+                    <div class="google-profile" onclick="toggleLogout(event)">
+                        <span class="profile-name">${user.name.split(' ')[0]}</span>
+                        <img src="${user.picture || 'https://via.placeholder.com/32'}" alt="${user.name}" class="profile-avatar" onerror="this.src='https://via.placeholder.com/32'">
+                        <div class="profile-dropdown">
+                            <button class="dropdown-item" onclick="logout(event)">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Update navbar for logged out user
+        function updateNavbarForLoggedOutUser() {
+            const authSection = document.getElementById('auth-section');
+            if (authSection) {
+                authSection.innerHTML = `
+                    <a href="/login" class="nav-link login-btn"><i class="fas fa-sign-in-alt"></i> Login</a>
+                `;
+            }
+        }
+
+        // Update mobile menu for logged in user
+        function updateMobileMenuForLoggedInUser(user) {
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenu) {
+                mobileMenu.innerHTML = `
+                    <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="/analysis"><i class="fas fa-search"></i> Analyze</a></li>
+                    <li><a href="/social-feed"><i class="fas fa-newspaper"></i> Social Feed</a></li>
+                    <li><a href="/about"><i class="fas fa-info-circle"></i> About</a></li>
+                    <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+                    <li><div class="mobile-profile">
+                        <img src="${user.picture || 'https://via.placeholder.com/50'}" class="mobile-avatar" onerror="this.src='https://via.placeholder.com/50'">
+                        <div class="mobile-info">
+                            <div class="mobile-name">${user.name}</div>
+                            <div class="mobile-email">${user.email}</div>
+                        </div>
+                    </div></li>
+                    <li><a href="#" onclick="logout(event)" class="mobile-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                `;
+            }
+        }
+
+        // Update mobile menu for logged out user
+        function updateMobileMenuForLoggedOutUser() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenu) {
+                mobileMenu.innerHTML = `
+                    <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="/analysis"><i class="fas fa-search"></i> Analyze</a></li>
+                    <li><a href="/social-feed"><i class="fas fa-newspaper"></i> Social Feed</a></li>
+                    <li><a href="/about"><i class="fas fa-info-circle"></i> About</a></li>
+                    <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+                    <li><a href="/login" class="nav-link login-btn"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                `;
+            }
+        }
+
+        // Toggle logout dropdown
+        window.toggleLogout = function(event) {
+            event.stopPropagation();
+            const dropdown = document.querySelector('.profile-dropdown');
+            if (dropdown) {
+                dropdown.classList.toggle('show');
+            }
+        };
+
+        // GLOBAL LOGOUT FUNCTION - Works across all pages
+        window.logout = function(event) {
+            if (event) event.stopPropagation();
+            
+            localStorage.removeItem('deepfakeUser');
+            
+            updateNavbarForLoggedOutUser();
+            updateMobileMenuForLoggedOutUser();
+            
+            const message = document.createElement('div');
+            message.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #ff4444;
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                z-index: 9999;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                animation: slideIn 0.3s ease;
+            `;
+            message.innerHTML = '<i class="fas fa-check-circle"></i> Logged out successfully!';
+            document.body.appendChild(message);
+            
+            setTimeout(() => {
+                message.remove();
+                window.location.href = '/';
+            }, 1500);
+        };
+    </script>
+</body>
+</html>

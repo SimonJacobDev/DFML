@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login | DeepFake Shield</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #000000;
+            --primary-dark: #333333;
+            --secondary: #666666;
+            --accent: #0077ff;
+            --accent-light: #3399ff;
+            --light: #ffffff;
+            --light-gray: #f8f9fa;
+            --gray: #e0e0e0;
+            --dark-gray: #666666;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s ease;
+            --border-radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--light-gray) 0%, var(--light) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            min-height: 600px;
+            background: var(--light);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-hover);
+        }
+
+        .login-left {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: var(--light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--light);
+            font-weight: 800;
+            font-size: 1.5rem;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+        }
+
+        .logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .logo-highlight {
+            color: var(--accent-light);
+        }
+
+        .login-left h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .login-left p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .features-list {
+            list-style: none;
+            margin-top: 30px;
+        }
+
+        .features-list li {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .features-list i {
+            color: var(--accent-light);
+            font-size: 1.2rem;
+            width: 24px;
+        }
+
+        .login-right {
+            flex: 1;
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-header h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: var(--dark-gray);
+            font-size: 1rem;
+        }
+
+        /* Demo Note */
+        .demo-note {
+            background: rgba(0, 119, 255, 0.1);
+            border: 1px solid rgba(0, 119, 255, 0.3);
+            border-radius: var(--border-radius);
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+        }
+
+        .demo-note i {
+            color: var(--accent);
+            margin-right: 8px;
+        }
+
+        .login-form {
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--primary);
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid var(--gray);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--light);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 119, 255, 0.1);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 42px;
+            background: none;
+            border: none;
+            color: var(--dark-gray);
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .remember-me input {
+            width: 18px;
+            height: 18px;
+        }
+
+        .forgot-password {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .forgot-password:hover {
+            color: var(--accent-light);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            background: var(--accent);
+            color: var(--light);
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-login:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--gray);
+        }
+
+        .divider span {
+            background: var(--light);
+            padding: 0 20px;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 14px;
+            border: 2px solid var(--gray);
+            border-radius: var(--border-radius);
+            background: var(--light);
+            color: var(--primary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .social-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        /* Google Sign-In Button Custom Styling */
+        .google-signin-wrapper {
+            flex: 1;
+        }
+        
+        .google-signin-wrapper .g_id_signin {
+            width: 100%;
+        }
+        
+        .google-signin-wrapper iframe {
+            border-radius: var(--border-radius) !important;
+            width: 100% !important;
+        }
+        
+        .google-signin-wrapper .nsm7Bb-HzV7m-LgbsSe {
+            border-radius: var(--border-radius) !important;
+            border: 2px solid var(--gray) !important;
+            transition: var(--transition) !important;
+            max-width: 100% !important;
+            width: 100% !important;
+        }
+        
+        .google-signin-wrapper .nsm7Bb-HzV7m-LgbsSe:hover {
+            border-color: var(--accent) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: var(--shadow) !important;
+        }
+
+        .signup-link {
+            text-align: center;
+            color: var(--dark-gray);
+            margin-top: 20px;
+        }
+
+        .signup-link a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Success Message */
+        .success-message, .google-success-message {
+            background: rgba(0, 204, 102, 0.1);
+            color: #00cc66;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            border: 1px solid rgba(0, 204, 102, 0.3);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .google-success-message {
+            background: rgba(0, 119, 255, 0.1);
+            color: var(--accent);
+            border-color: rgba(0, 119, 255, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .success-message.show, .google-success-message.show {
+            display: block;
+        }
+
+        /* User info card for Google sign-in */
+        .user-info-card {
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            display: none;
+            border: 1px solid var(--gray);
+        }
+        
+        .user-info-card.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .user-info-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .user-email {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+        
+        .btn-signout {
+            width: 100%;
+            padding: 12px;
+            background: var(--light);
+            border: 2px solid var(--gray);
+            border-radius: var(--border-radius);
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-signout:hover {
+            border-color: #ff4444;
+            color: #ff4444;
+        }
+
+        @media (max-width: 992px) {
+            .login-container {
+                flex-direction: column;
+                max-width: 500px;
+            }
+
+            .login-left {
+                padding: 40px 30px;
+            }
+
+            .login-right {
+                padding: 40px 30px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            body {
+                padding: 10px;
+            }
+
+            .login-left h1 {
+                font-size: 2rem;
+            }
+
+            .login-header h2 {
+                font-size: 1.8rem;
+            }
+
+            .social-login {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <!-- Left Panel - Branding & Info -->
+        <div class="login-left">
+            <div class="logo-container">
+                <a href="{{ url_for('home') }}" class="logo">
+                    <img src="{{ url_for('static', filename='161966489-jf-initial-letter-vector-logo-icon.jpg') }}" alt="DeepFake Shield Logo">
+                    <span class="logo-text">DeepFake <span class="logo-highlight">Shield</span></span>
+                </a>
+            </div>
+
+            <h1>Secure Access to AI-Powered Detection</h1>
+            <p>Login to access advanced deepfake detection features, detailed analysis reports, and your media history.</p>
+
+            <ul class="features-list">
+                <li>
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Advanced AI detection algorithms</span>
+                </li>
+                <li>
+                    <i class="fas fa-history"></i>
+                    <span>Access your analysis history</span>
+                </li>
+                <li>
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Detailed analytics and reports</span>
+                </li>
+                <li>
+                    <i class="fas fa-bolt"></i>
+                    <span>Priority processing for logged-in users</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Right Panel - Login Form -->
+        <div class="login-right">
+            <div class="login-header">
+                <h2>Welcome Back</h2>
+                <p>Sign in to continue to DeepFake Shield</p>
+            </div>
+
+            <!-- Demo Note -->
+            <div class="demo-note">
+                <i class="fas fa-info-circle"></i>
+                <strong>DEMO MODE:</strong> Enter any username and password OR use Google Sign-In.
+            </div>
+
+            <!-- Success Messages -->
+            <div class="success-message" id="successMessage"></div>
+            <div class="google-success-message" id="googleSuccessMessage"></div>
+
+            <!-- User Info Card (shown after Google Sign-In) -->
+            <div class="user-info-card" id="userInfoCard">
+                <div class="user-info-header">
+                    <img class="user-avatar" id="userAvatar" src="" alt="User avatar">
+                    <div>
+                        <div class="user-name" id="userName"></div>
+                        <div class="user-email" id="userEmail"></div>
+                    </div>
+                </div>
+                <button class="btn-signout" id="signoutButton">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Sign Out
+                </button>
+            </div>
+
+            <!-- Login Form -->
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="username">
+                        <i class="fas fa-user"></i> Username or Email
+                    </label>
+                    <input type="text" 
+                           id="username" 
+                           name="username" 
+                           class="form-input" 
+                           placeholder="Enter any username" 
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
+                    <input type="password" 
+                           id="password" 
+                           name="password" 
+                           class="form-input" 
+                           placeholder="Enter any password" 
+                           required>
+                    <button type="button" class="password-toggle" id="togglePassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+
+                <div class="form-options">
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-password">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="btn-login">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Login to Continue
+                </button>
+
+                <div class="divider">
+                    <span>Or continue with</span>
+                </div>
+
+                <div class="social-login">
+                    <!-- Google Sign-In Button Container -->
+                    <div id="g_id_onload"
+                         data-client_id="565604875113-ea4o8tsrs1o8cid6ih98hnasu5rfavfp.apps.googleusercontent.com"
+                         data-context="signin"
+                         data-ux_mode="popup"
+                         data-callback="handleGoogleCredentialResponse"
+                         data-auto_prompt="false">
+                    </div>
+                    
+                    <div class="google-signin-wrapper">
+                        <div class="g_id_signin"
+                             data-type="standard"
+                             data-shape="rectangular"
+                             data-theme="outline"
+                             data-text="continue_with"
+                             data-size="large"
+                             data-logo_alignment="left"
+                             data-width="250">
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="social-btn" id="githubBtn">
+                        <i class="fab fa-github"></i>
+                        GitHub
+                    </button>
+                </div>
+
+                <div class="signup-link">
+                    Don't have an account? 
+                    <a href="{{ url_for('signup') }}">Create Account</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const togglePassword = document.getElementById('togglePassword');
+            const successMessage = document.getElementById('successMessage');
+            const googleSuccessMessage = document.getElementById('googleSuccessMessage');
+            const userInfoCard = document.getElementById('userInfoCard');
+            const userAvatar = document.getElementById('userAvatar');
+            const userName = document.getElementById('userName');
+            const userEmail = document.getElementById('userEmail');
+            const signoutButton = document.getElementById('signoutButton');
+            const githubBtn = document.getElementById('githubBtn');
+            
+            // Toggle password visibility
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+            });
+            
+            // Login form submission - ACCEPTS ANY CREDENTIALS
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault(); // Prevent form submission
+                
+                const username = usernameInput.value.trim();
+                const password = passwordInput.value;
+                
+                // Show loading state
+                const submitBtn = this.querySelector('.btn-login');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+                submitBtn.disabled = true;
+                
+                // Hide any existing messages
+                successMessage.classList.remove('show');
+                googleSuccessMessage.classList.remove('show');
+                
+                // Simulate API call delay
+                setTimeout(() => {
+                    // Demo user data for regular login
+                    const userData = {
+                        name: username || "Demo User",
+                        email: username + "@demo.com",
+                        picture: "https://via.placeholder.com/50",
+                        isLoggedIn: true
+                    };
+                    
+                    localStorage.setItem('deepfakeUser', JSON.stringify(userData));
+                    
+                    // ALWAYS ACCEPT LOGIN - No validation needed
+                    successMessage.innerHTML = '<i class="fas fa-check-circle"></i> Login successful! Redirecting to posts...';
+                    successMessage.classList.add('show');
+                    
+                    // Simulate successful login redirect
+                    setTimeout(() => {
+                        submitBtn.innerHTML = '<i class="fas fa-check"></i> Login Successful!';
+                        submitBtn.style.background = '#00cc66';
+                        
+                        // Redirect to social_feed page (POSTS PAGE)
+                        window.location.href = "{{ url_for('social_feed') }}";
+                    }, 1000);
+                    
+                }, 1500); // Simulate 1.5 second authentication delay
+            });
+            
+            // Auto-hide success message after 5 seconds
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            }, 5000);
+            
+            // Add subtle animation to the left panel
+            const leftPanel = document.querySelector('.login-left');
+            leftPanel.style.opacity = '0';
+            leftPanel.style.transform = 'translateX(-20px)';
+            
+            setTimeout(() => {
+                leftPanel.style.transition = 'all 0.8s ease';
+                leftPanel.style.opacity = '1';
+                leftPanel.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Add focus effects to form inputs
+            const formInputs = document.querySelectorAll('.form-input');
+            formInputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('focused');
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.classList.remove('focused');
+                });
+            });
+            
+            // Auto-fill with demo credentials for convenience
+            usernameInput.value = 'demo';
+            passwordInput.value = 'demo123';
+            
+            // GitHub button (demo)
+            githubBtn.addEventListener('click', function() {
+                googleSuccessMessage.innerHTML = '<i class="fas fa-info-circle"></i> GitHub login is in demo mode. Please use Google Sign-In.';
+                googleSuccessMessage.classList.add('show');
+                setTimeout(() => {
+                    googleSuccessMessage.classList.remove('show');
+                }, 3000);
+            });
+            
+            // Check if user is already signed in with Google
+            checkGoogleSignInStatus();
+        });
+
+        // Google Sign-In callback function
+        function handleGoogleCredentialResponse(response) {
+            
+            console.log("Google credential response:", response);
+            
+            // Decode the JWT token to get user info
+            const decodedToken = parseJwt(response.credential);
+            const userData = {
+                name: decodedToken.name,
+                email: decodedToken.email,
+                picture: decodedToken.picture,
+                isLoggedIn: true,
+                loginTime: new Date().toISOString()
+            };
+            
+            localStorage.setItem('deepfakeUser', JSON.stringify(userData));
+            console.log("Decoded user info:", decodedToken);
+            
+            // Display Google success message
+            const googleSuccessMessage = document.getElementById('googleSuccessMessage');
+            googleSuccessMessage.innerHTML = '<i class="fas fa-check-circle"></i> Google Sign-In successful!';
+            googleSuccessMessage.classList.add('show');
+            
+            // Hide regular success message if visible
+            const successMessage = document.getElementById('successMessage');
+            successMessage.classList.remove('show');
+            
+            // Update user info card
+            const userInfoCard = document.getElementById('userInfoCard');
+            const userAvatar = document.getElementById('userAvatar');
+            const userName = document.getElementById('userName');
+            const userEmail = document.getElementById('userEmail');
+            
+            userAvatar.src = decodedToken.picture;
+            userName.textContent = decodedToken.name;
+            userEmail.textContent = decodedToken.email;
+            userInfoCard.classList.add('show');
+            
+            // Show loading on Google button (optional)
+            const googleButton = document.querySelector('.g_id_signin');
+            if (googleButton) {
+                googleButton.style.opacity = '0.6';
+                googleButton.style.pointerEvents = 'none';
+            }
+            
+            // Simulate redirect after Google Sign-In
+            setTimeout(() => {
+                window.location.href = "{{ url_for('social_feed') }}?google_signin=true";
+            }, 1500);
+        }
+
+        // Helper function to parse JWT token
+        function parseJwt(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                return JSON.parse(jsonPayload);
+            } catch (error) {
+                console.error("Error parsing JWT:", error);
+                return {};
+            }
+        }
+
+        // Check if user is already signed in (for demo purposes)
+        function checkGoogleSignInStatus() {
+            // This is a demo function - in production, you'd check with Google's API
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('google_signin') === 'true') {
+                const googleSuccessMessage = document.getElementById('googleSuccessMessage');
+                googleSuccessMessage.innerHTML = '<i class="fas fa-check-circle"></i> You are signed in with Google!';
+                googleSuccessMessage.classList.add('show');
+            }
+        }
+
+        // Sign out function
+        document.addEventListener('DOMContentLoaded', function() {
+            const signoutButton = document.getElementById('signoutButton');
+            if (signoutButton) {
+                signoutButton.addEventListener('click', function() {
+                    // Clear localStorage
+                    localStorage.removeItem('deepfakeUser');
+                    
+                    // Hide user info card
+                    const userInfoCard = document.getElementById('userInfoCard');
+                    userInfoCard.classList.remove('show');
+                    
+                    // Show sign out message
+                    const googleSuccessMessage = document.getElementById('googleSuccessMessage');
+                    googleSuccessMessage.innerHTML = '<i class="fas fa-info-circle"></i> Signed out successfully';
+                    googleSuccessMessage.classList.add('show');
+                    
+                    // Re-enable Google button
+                    const googleButton = document.querySelector('.g_id_signin');
+                    if (googleButton) {
+                        googleButton.style.opacity = '1';
+                        googleButton.style.pointerEvents = 'auto';
+                    }
+                    
+                    setTimeout(() => {
+                        googleSuccessMessage.classList.remove('show');
+                    }, 3000);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About | DeepFake Shield</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn about DeepFake Shield - Our mission, team, and technology for detecting synthetic media.">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='about.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='161966489-jf-initial-letter-vector-logo-icon.jpg') }}">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Google-Style Profile - Add this to your existing CSS */
+        .google-profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 5px 5px 12px;
+            border-radius: 30px;
+            background: transparent;
+            cursor: pointer;
+            position: relative;
+            margin-left: 10px;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .google-profile:hover {
+            background: rgba(0, 119, 255, 0.05);
+            border-color: var(--gray);
+        }
+
+        .profile-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+
+        .profile-name {
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: var(--primary);
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-width: 120px;
+            display: none;
+            z-index: 1001;
+            border: 1px solid var(--gray);
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .profile-dropdown.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ff4444;
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 0.95rem;
+            cursor: pointer;
+            border: none;
+            background: white;
+            width: 100%;
+            text-align: left;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(255, 68, 68, 0.05);
+        }
+
+        .dropdown-item i {
+            width: 18px;
+        }
+
+        /* Mobile Profile Styles */
+        .mobile-profile {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 119, 255, 0.05);
+            border-radius: 50px;
+        }
+
+        .mobile-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+
+        .mobile-info {
+            text-align: left;
+        }
+
+        .mobile-name {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .mobile-email {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        .mobile-logout {
+            color: #ff4444 !important;
+            font-size: 1.5rem !important;
+        }
+
+        /* ================= ENHANCED NAVBAR DESIGN ONLY ================= */
+        .navbar-white {
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            padding: 0;
+        }
+
+        .navbar-white.scrolled {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-wrapper {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #000000;
+            font-weight: 800;
+            font-size: 1.4rem;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .logo-highlight {
+            color: #0077ff;
+        }
+
+        #menu {
+            display: flex;
+            list-style: none;
+            gap: 15px;
+            margin: 0;
+            padding: 0;
+            align-items: center;
+        }
+
+        #menu li {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #666666;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 10px 15px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            border-radius: 8px;
+        }
+
+        .nav-link:hover {
+            color: #000000;
+            background: rgba(0, 119, 255, 0.05);
+        }
+
+        .nav-link.active {
+            color: #0077ff;
+            font-weight: 600;
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: #0077ff;
+            border-radius: 50%;
+        }
+
+        /* FIXED LOGIN BUTTON */
+        .login-btn {
+            background: linear-gradient(135deg, #0077ff, #3399ff);
+            color: white !important;
+            padding: 10px 22px !important;
+            border-radius: 25px;
+            font-weight: 600;
+            display: flex !important;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 119, 255, 0.2);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 119, 255, 0.3);
+            color: white !important;
+            background: linear-gradient(135deg, #3399ff, #0077ff);
+        }
+
+        /* Mobile Menu Icon */
+        .menuIcon {
+            display: none;
+            width: 30px;
+            height: 24px;
+            position: relative;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .menuIcon .icon {
+            display: block;
+            position: absolute;
+            height: 3px;
+            width: 100%;
+            background: #000000;
+            border-radius: 3px;
+            opacity: 1;
+            left: 0;
+            transform: rotate(0deg);
+            transition: 0.25s ease-in-out;
+        }
+
+        .menuIcon .icon:nth-child(1) {
+            top: 0px;
+        }
+
+        .menuIcon .icon:nth-child(2) {
+            top: 10px;
+        }
+
+        .menuIcon .icon:nth-child(3) {
+            top: 20px;
+        }
+
+        .menuIcon.toggle .icon:nth-child(1) {
+            top: 10px;
+            transform: rotate(135deg);
+        }
+
+        .menuIcon.toggle .icon:nth-child(2) {
+            opacity: 0;
+            left: -30px;
+        }
+
+        .menuIcon.toggle .icon:nth-child(3) {
+            top: 10px;
+            transform: rotate(-135deg);
+        }
+
+        /* Overlay Menu */
+        .overlay-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+        }
+
+        .overlay-menu.show {
+            transform: translateX(0);
+        }
+
+        .overlay-menu ul {
+            list-style: none;
+            text-align: center;
+            padding: 0;
+        }
+
+        .overlay-menu li {
+            margin: 20px 0;
+        }
+
+        .overlay-menu a {
+            color: #000000;
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 12px 30px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .overlay-menu a:hover {
+            color: #0077ff;
+            background: rgba(0, 119, 255, 0.05);
+        }
+
+        .mobile-login-btn {
+            background: linear-gradient(135deg, #0077ff, #3399ff);
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(0, 119, 255, 0.2);
+        }
+
+        .mobile-login-btn:hover {
+            background: linear-gradient(135deg, #3399ff, #0077ff);
+            color: white !important;
+        }
+
+        /* Number Animation Styles */
+        .counter {
+            font-size: 2.2rem;
+            color: #0077ff;
+            margin-bottom: 5px;
+            display: inline-block;
+            font-weight: 700;
+        }
+
+        .counter.animated {
+            animation: countUp 1.5s ease-out forwards;
+        }
+
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1200px) {
+            .nav-wrapper {
+                padding: 0 20px;
+            }
+            
+            #menu {
+                gap: 10px;
+            }
+            
+            .nav-link {
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+            
+            .login-btn {
+                padding: 9px 18px !important;
+                font-size: 0.9rem;
+            }
+            
+            .counter {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 868px) {
+            #menu {
+                display: none;
+            }
+            
+            .menuIcon {
+                display: block;
+            }
+            
+            .nav-wrapper {
+                padding: 0 20px;
+            }
+            
+            .logo {
+                font-size: 1.2rem;
+            }
+            
+            .logo img {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .overlay-menu a {
+                font-size: 1.5rem;
+                padding: 10px 25px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .nav-wrapper {
+                padding: 0 15px;
+            }
+            
+            .logo-text {
+                font-size: 1.1rem;
+            }
+            
+            .overlay-menu a {
+                font-size: 1.3rem;
+                padding: 8px 20px;
+            }
+            
+            .counter {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* ================= ONLY NAVBAR CSS ABOVE ================= */
+        /* All other styles remain as they were in your about.css file */
+    </style>
+</head>
+
+<body>
+
+<!-- ================= ENHANCED NAVBAR ================= -->
+<nav id="navbar" class="navbar-white">
+    <div class="nav-wrapper">
+        <div class="logo-container">
+            <a href="{{ url_for('home') }}" class="logo">
+                <img width="40" height="40" src="{{ url_for('static', filename='161966489-jf-initial-letter-vector-logo-icon.jpg') }}" alt="DeepFake Shield Logo">
+                <span class="logo-text">DeepFake <span class="logo-highlight">Shield</span></span>
+            </a>
+        </div>
+
+        <!-- Desktop Menu - REMOVED DUPLICATE LOGIN BUTTON -->
+        <ul id="menu">
+            <li><a href="{{ url_for('home') }}" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="{{ url_for('analysis') }}" class="nav-link"><i class="fas fa-search"></i> Analyze</a></li>
+            <li><a href="/social-feed" class="nav-link"><i class="fas fa-newspaper"></i> Social Feed</a></li>
+            <li><a href="{{ url_for('about') }}" class="nav-link active"><i class="fas fa-info-circle"></i> About</a></li>
+            <li><a href="{{ url_for('contact') }}" class="nav-link"><i class="fas fa-envelope"></i> Contact</a></li>
+            <li id="auth-section"></li>  <!-- This will show either profile OR login button -->
+        </ul>
+        
+        <!-- Mobile Menu Icon -->
+        <div class="menuIcon">
+            <span class="icon"></span>
+            <span class="icon"></span>
+            <span class="icon"></span>
+        </div>
+    </div>
+</nav>
+
+<!-- ===== MOBILE OVERLAY MENU ===== -->
+<div class="overlay-menu">
+    <ul id="mobile-menu">
+        <!-- Mobile menu will be dynamically populated by JavaScript -->
+    </ul>
+</div>
+
+<!-- ================= HERO SECTION ================= -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 hero-content">
+                <h1 class="hero-title">
+                    About <span class="highlight">DeepFake Shield</span>
+                </h1>
+                <p class="hero-subtitle">
+                    We're on a mission to combat synthetic media manipulation through cutting-edge AI technology. 
+                    Our platform provides reliable deepfake detection to protect digital authenticity.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <h3 class="counter" data-target="2023">0</h3>
+                        <p>Founded</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3 class="counter" data-target="3">0</h3>
+                        <p>Team Members</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3 class="counter" data-target="50" data-suffix="K+">0</h3>
+                        <p>Files Analyzed</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-visual">
+                    <div class="mission-card">
+                        <div class="mission-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Our Mission</h3>
+                        <p>To provide accessible, accurate, and reliable deepfake detection technology that empowers individuals and organizations to verify media authenticity in the age of synthetic content.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= OUR STORY ================= -->
+<section class="story-section">
+    <div class="container">
+        <div class="section-header text-center">
+            <h2>Our Story</h2>
+            <p class="section-subtitle">How DeepFake Shield was born and evolved</p>
+        </div>
+        
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-date">Jan 2023</div>
+                <div class="timeline-content">
+                    <h4>Concept Development</h4>
+                    <p>Recognizing the growing threat of synthetic media, three computer science students began researching deepfake detection techniques.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">Jun 2023</div>
+                <div class="timeline-content">
+                    <h4>First Prototype</h4>
+                    <p>Developed initial AI models for detecting facial manipulation in videos and images with 85% accuracy.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">Oct 2023</div>
+                <div class="timeline-content">
+                    <h4>Platform Launch</h4>
+                    <p>Released the first public version of DeepFake Shield with video and image analysis capabilities.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">Present</div>
+                <div class="timeline-content">
+                    <h4>Continuous Improvement</h4>
+                    <p>Expanding detection capabilities to include audio deepfakes and improving accuracy with advanced neural networks.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= TECHNOLOGY ================= -->
+<section class="technology-section">
+    <div class="container">
+        <div class="section-header text-center">
+            <h2>Our Technology</h2>
+            <p class="section-subtitle">Powered by cutting-edge AI and machine learning</p>
+        </div>
+        
+        <div class="tech-grid">
+            <div class="tech-card">
+                <div class="tech-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h4>Neural Networks</h4>
+                <p>Advanced convolutional neural networks trained on millions of real and synthetic media samples.</p>
+            </div>
+            <div class="tech-card">
+                <div class="tech-icon">
+                    <i class="fas fa-wave-square"></i>
+                </div>
+                <h4>Signal Analysis</h4>
+                <p>Digital signal processing techniques to detect inconsistencies in audio and video streams.</p>
+            </div>
+            <div class="tech-card">
+                <div class="tech-icon">
+                    <i class="fas fa-fingerprint"></i>
+                </div>
+                <h4>Biometric Detection</h4>
+                <p>Analysis of facial micro-expressions, eye movements, and other biometric markers.</p>
+            </div>
+            <div class="tech-card">
+                <div class="tech-icon">
+                    <i class="fas fa-sitemap"></i>
+                </div>
+                <h4>Ensemble Learning</h4>
+                <p>Multiple AI models working together to provide highly accurate detection results.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= ENHANCED TEAM SECTION ================= -->
+<section class="team-section" id="team_section">
+    <div class="container">
+        <div class="section-header text-center">
+            <h2>Meet Our Team</h2>
+            <p class="section-subtitle">The brilliant minds behind DeepFake Shield technology</p>
+        </div>
+
+        <div class="team-container">
+            <!-- Team Leader Card - Simon -->
+            <div class="team-leader-card">
+                <div class="team-leader-content">
+                    <div class="leader-badge">
+                        <i class="fas fa-star"></i> Full Stack Developer
+                    </div>
+                    <div class="leader-main">
+                        <div class="leader-image">
+                            <img src="{{ url_for('static', filename='Passport.jpg') }}" 
+                                 alt="Simon Jacob A"
+                                 class="leader-img"
+                                 onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'">
+                            <div class="image-glow"></div>
+                        </div>
+                        <div class="leader-info">
+                            <h3 class="leader-name">Simon Jacob A</h3>
+                            <p class="leader-title">Front-End Architect & UI/UX Lead</p>
+                            <p class="leader-quote">"Creating intuitive interfaces that make complex AI accessible to everyone."</p>
+                            <div class="leader-skills">
+                                <span class="skill-tag">React</span>
+                                <span class="skill-tag">UI/UX</span>
+                                <span class="skill-tag">JavaScript</span>
+                                <span class="skill-tag">Figma</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="leader-bio">
+                        <p>Aspiring Front-End Developer and Computer Science student with a passion for creating user-centric designs that bridge the gap between complex AI technology and everyday users.</p>
+                    </div>
+                    <div class="leader-social">
+                        <a href="https://www.linkedin.com/in/asimonjacob/" target="_blank" class="social-btn linkedin">
+                            <i class="fab fa-linkedin"></i>
+                            <span>LinkedIn</span>
+                        </a>
+                        <a href="https://github.com/SimonJacobcse26" target="_blank" class="social-btn github">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub</span>
+                        </a>
+                        <a href="mailto:asimonjacob@gmail.com" class="social-btn email">
+                            <i class="fas fa-envelope"></i>
+                            <span>Email</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Member Card - Arvind -->
+            <div class="team-leader-card">
+                <div class="team-leader-content">
+                    <div class="leader-badge">
+                        <i class="fas fa-cogs"></i> AI Engineer
+                    </div>
+                    <div class="leader-main">
+                        <div class="leader-image">
+                            <img src="{{ url_for('static', filename='WhatsApp Image 2024-04-18 at 13.58.13_387397d3.jpg') }}" 
+                                 alt="Arvind M"
+                                 class="leader-img"
+                                 onerror="this.src='https://images.unsplash.com/photo-1507591064344-4c6ce005-128b-e1a7c7f4c8bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'">
+                            <div class="image-glow"></div>
+                        </div>
+                        <div class="leader-info">
+                            <h3 class="leader-name">Arvind M</h3>
+                            <p class="leader-title">AI/ML Specialist</p>
+                            <p class="leader-quote">"Building intelligent systems that can distinguish reality from synthetic media."</p>
+                            <div class="leader-skills">
+                                <span class="skill-tag">Python</span>
+                                <span class="skill-tag">TensorFlow</span>
+                                <span class="skill-tag">Neural Networks</span>
+                                <span class="skill-tag">Deep Learning</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="leader-bio">
+                        <p>AI enthusiast specializing in machine learning and neural networks for deepfake detection. Focuses on developing robust algorithms that can identify synthetic media with high accuracy.</p>
+                    </div>
+                    <div class="leader-social">
+                        <a href="https://www.linkedin.com/in/arvind-murali-9aa997250" target="_blank" class="social-btn linkedin">
+                            <i class="fab fa-linkedin"></i>
+                            <span>LinkedIn</span>
+                        </a>
+                        <a href="#" target="_blank" class="social-btn github">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub</span>
+                        </a>
+                        <a href="mailto:arvind@deepfakeshield.com" class="social-btn email">
+                            <i class="fas fa-envelope"></i>
+                            <span>Email</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Member Card - Santhosh -->
+            <div class="team-leader-card">
+                <div class="team-leader-content">
+                    <div class="leader-badge">
+                        <i class="fas fa-server"></i> Backend Developer
+                    </div>
+                    <div class="leader-main">
+                        <div class="leader-image">
+                            <img src="{{ url_for('static', filename='WhatsApp Image 2024-04-24 at 10.18.52_a600994c.jpg') }}" 
+                                 alt="Santhosh G"
+                                 class="leader-img"
+                                 onerror="this.src='https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'">
+                            <div class="image-glow"></div>
+                        </div>
+                        <div class="leader-info">
+                            <h3 class="leader-name">Santhosh G</h3>
+                            <p class="leader-title">Backend & Database Architect</p>
+                            <p class="leader-quote">"Building scalable systems that power our AI detection platform."</p>
+                            <div class="leader-skills">
+                                <span class="skill-tag">Node.js</span>
+                                <span class="skill-tag">MongoDB</span>
+                                <span class="skill-tag">API Design</span>
+                                <span class="skill-tag">Cloud Services</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="leader-bio">
+                        <p>Backend developer focused on creating efficient, scalable server architecture and database systems that support real-time deepfake detection and processing.</p>
+                    </div>
+                    <div class="leader-social">
+                        <a href="https://www.linkedin.com/in/santhosh-g-73869823b" target="_blank" class="social-btn linkedin">
+                            <i class="fab fa-linkedin"></i>
+                            <span>LinkedIn</span>
+                        </a>
+                        <a href="#" target="_blank" class="social-btn github">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub</span>
+                        </a>
+                        <a href="mailto:santhosh@deepfakeshield.com" class="social-btn email">
+                            <i class="fas fa-envelope"></i>
+                            <span>Email</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Stats Banner -->
+        <div class="team-stats">
+            <div class="stat-item">
+                <div class="stat-number">
+                    <span class="team-counter" data-target="3" data-suffix="+">0</span>
+                </div>
+                <div class="stat-label">Team Members</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">
+                    <span class="team-counter" data-target="5000" data-suffix="+">0</span>
+                </div>
+                <div class="stat-label">Hours of Development</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">
+                    <span class="team-counter" data-target="50" data-suffix="K+">0</span>
+                </div>
+                <div class="stat-label">Media Files Analyzed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">
+                    <span class="team-counter" data-target="99.2" data-suffix="%">0</span>
+                </div>
+                <div class="stat-label">Detection Accuracy</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= VALUES ================= -->
+<section class="values-section">
+    <div class="container">
+        <div class="section-header text-center">
+            <h2>Our Values</h2>
+            <p class="section-subtitle">Principles that guide everything we do</p>
+        </div>
+        
+        <div class="values-grid">
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h4>Privacy First</h4>
+                <p>We never store uploaded media files and ensure all analysis is performed securely.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+                <h4>Accuracy</h4>
+                <p>We continuously improve our models to provide the most reliable detection results.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <h4>Accessibility</h4>
+                <p>Making deepfake detection technology available to everyone, not just experts.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <h4>Innovation</h4>
+                <p>Staying ahead of evolving synthetic media techniques with constant research.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="footer-logo">
+                    <img width="40" src="{{ url_for('static', filename='161966489-jf-initial-letter-vector-logo-icon.jpg') }}" alt="Logo">
+                    <span>DeepFake Shield</span>
+                </div>
+                <p class="footer-description">
+                    Advanced AI platform for detecting and preventing deepfake media manipulation.
+                </p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h5>Product</h5>
+                <a href="{{ url_for('analysis') }}">Media Analysis</a>
+                <a href="#">API Documentation</a>
+                <a href="#">Pricing</a>
+                <a href="#">Changelog</a>
+            </div>
+            
+            <div class="footer-col">
+                <h5>Company</h5>
+                <a href="{{ url_for('about') }}">About Us</a>
+                <a href="{{ url_for('contact') }}">Contact</a>
+                <a href="#">Blog</a>
+                <a href="#">Careers</a>
+            </div>
+            
+            <div class="footer-col">
+                <h5>Legal</h5>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+                <a href="#">GDPR</a>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 DeepFake Shield. All rights reserved.</p>
+            <div class="credits">
+                <span>Developed by: @SIMON JACOB A, @ARVIND M, @SANTHOSH G</span>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- ================= BANNER ================= -->
+<div class="info-banner">
+    <div class="banner-content">
+        <i class="fas fa-exclamation-circle"></i>
+        <span>Deepfake detection is crucial for digital security in the age of AI-generated content.</span>
+        <a href="{{ url_for('analysis') }}" class="banner-link">Try Analysis →</a>
+    </div>
+</div>
+
+<!-- ================= SCRIPTS ================= -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // ========== PERSISTENT LOGIN SYSTEM FOR ALL PAGES ==========
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check login state on page load
+        const loggedInUser = localStorage.getItem('deepfakeUser');
+        
+        if (loggedInUser) {
+            const user = JSON.parse(loggedInUser);
+            updateNavbarForLoggedInUser(user);
+            updateMobileMenuForLoggedInUser(user);
+        } else {
+            updateNavbarForLoggedOutUser();
+            updateMobileMenuForLoggedOutUser();
+        }
+
+        // Listen for login/logout events from OTHER pages/tabs
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'deepfakeUser') {
+                if (e.newValue) {
+                    // User logged in on another page
+                    const user = JSON.parse(e.newValue);
+                    updateNavbarForLoggedInUser(user);
+                    updateMobileMenuForLoggedInUser(user);
+                } else {
+                    // User logged out on another page
+                    updateNavbarForLoggedOutUser();
+                    updateMobileMenuForLoggedOutUser();
+                }
+            }
+        });
+
+        // Custom event for same-page updates
+        window.addEventListener('loginStateChanged', function(e) {
+            if (e.detail.loggedIn) {
+                updateNavbarForLoggedInUser(e.detail.user);
+                updateMobileMenuForLoggedInUser(e.detail.user);
+            } else {
+                updateNavbarForLoggedOutUser();
+                updateMobileMenuForLoggedOutUser();
+            }
+        });
+
+        // Set active nav link
+        function setActiveNavLink() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                const linkPath = link.getAttribute('href');
+                if (linkPath === currentPath || 
+                    (currentPath.includes('about') && linkPath.includes('about'))) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        
+        setActiveNavLink();
+        
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Mobile menu toggle
+        const menuIcon = document.querySelector('.menuIcon');
+        const overlayMenu = document.querySelector('.overlay-menu');
+        const body = document.body;
+        
+        if (menuIcon) {
+            menuIcon.addEventListener('click', function() {
+                this.classList.toggle('toggle');
+                overlayMenu.classList.toggle('show');
+                
+                if (overlayMenu.classList.contains('show')) {
+                    body.style.overflow = 'hidden';
+                } else {
+                    body.style.overflow = '';
+                }
+            });
+        }
+        
+        // Close mobile menu when clicking links
+        document.querySelectorAll('.overlay-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (menuIcon) menuIcon.classList.remove('toggle');
+                overlayMenu.classList.remove('show');
+                body.style.overflow = '';
+            });
+        });
+        
+        // Close mobile menu when clicking outside
+        overlayMenu.addEventListener('click', (e) => {
+            if (e.target === overlayMenu) {
+                if (menuIcon) menuIcon.classList.remove('toggle');
+                overlayMenu.classList.remove('show');
+                body.style.overflow = '';
+            }
+        });
+        
+        // Close mobile menu on ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && overlayMenu.classList.contains('show')) {
+                if (menuIcon) menuIcon.classList.remove('toggle');
+                overlayMenu.classList.remove('show');
+                body.style.overflow = '';
+            }
+        });
+
+        // ================= NUMBER ANIMATION FUNCTION =================
+        function animateCounter(element) {
+            const target = parseFloat(element.getAttribute('data-target'));
+            const suffix = element.getAttribute('data-suffix') || '';
+            const duration = 1500;
+            const steps = 60;
+            const increment = target / steps;
+            let current = 0;
+            let startTime = null;
+            
+            function animate(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const progress = timestamp - startTime;
+                const percentage = Math.min(progress / duration, 1);
+                
+                current = target * percentage;
+                
+                if (suffix === '%') {
+                    element.textContent = current.toFixed(1) + suffix;
+                } else if (suffix.includes('K')) {
+                    element.textContent = Math.floor(current) + suffix;
+                } else {
+                    element.textContent = Math.floor(current) + suffix;
+                }
+                
+                if (percentage < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    element.textContent = target + suffix;
+                }
+            }
+            
+            element.classList.add('animated');
+            requestAnimationFrame(animate);
+        }
+
+        // Animate hero stats when they come into view
+        const heroCounters = document.querySelectorAll('.counter');
+        const heroObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter(entry.target);
+                    heroObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        heroCounters.forEach(counter => {
+            heroObserver.observe(counter);
+        });
+
+        // Animate team stats when they come into view
+        const teamCounters = document.querySelectorAll('.team-counter');
+        const teamObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter(entry.target);
+                    teamObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        teamCounters.forEach(counter => {
+            teamObserver.observe(counter);
+        });
+
+        // Timeline animation
+        const timelineItems = document.querySelectorAll('.timeline-item');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        timelineItems.forEach(item => observer.observe(item));
+        
+        // Team image optimization
+        const teamImages = document.querySelectorAll('.leader-img');
+        
+        teamImages.forEach(img => {
+            img.style.opacity = '0';
+            img.style.transition = 'opacity 0.5s ease';
+            
+            img.onload = function() {
+                this.style.opacity = '1';
+            };
+            
+            img.onerror = function() {
+                this.style.opacity = '1';
+            };
+            
+            if (img.complete) {
+                img.style.opacity = '1';
+            }
+        });
+        
+        // Add smooth hover effect to team cards
+        const teamCards = document.querySelectorAll('.team-leader-card');
+        teamCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 30px 70px rgba(0, 119, 255, 0.15)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 20px 60px rgba(0, 119, 255, 0.08)';
+            });
+        });
+        
+        // Social button hover effects
+        const socialButtons = document.querySelectorAll('.social-btn');
+        socialButtons.forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px) scale(1.05)';
+            });
+            
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+        
+        // Skill tag hover effects
+        const skillTags = document.querySelectorAll('.skill-tag');
+        skillTags.forEach(tag => {
+            tag.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px) scale(1.05)';
+            });
+            
+            tag.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+        
+        // Add image hover effects
+        const imageContainers = document.querySelectorAll('.leader-image');
+        imageContainers.forEach(container => {
+            const img = container.querySelector('.leader-img');
+            const glow = container.querySelector('.image-glow');
+            
+            container.addEventListener('mouseenter', function() {
+                img.style.transform = 'scale(1.05)';
+                if (glow) {
+                    glow.style.opacity = '0.6';
+                    glow.style.transform = 'scale(1.1)';
+                }
+            });
+            
+            container.addEventListener('mouseleave', function() {
+                img.style.transform = 'scale(1)';
+                if (glow) {
+                    glow.style.opacity = '0.4';
+                    glow.style.transform = 'scale(1)';
+                }
+            });
+        });
+        
+        // Smooth scroll to team section if anchor present
+        if (window.location.hash === '#team_section') {
+            setTimeout(() => {
+                const teamSection = document.getElementById('team_section');
+                if (teamSection) {
+                    const navbarHeight = document.getElementById('navbar').offsetHeight;
+                    window.scrollTo({
+                        top: teamSection.offsetTop - navbarHeight - 20,
+                        behavior: 'smooth'
+                    });
+                }
+            }, 100);
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const profile = document.querySelector('.google-profile');
+            const dropdown = document.querySelector('.profile-dropdown');
+            
+            if (profile && dropdown && !profile.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+    });
+
+    // Update navbar for logged in user
+    function updateNavbarForLoggedInUser(user) {
+        const authSection = document.getElementById('auth-section');
+        if (authSection) {
+            authSection.innerHTML = `
+                <div class="google-profile" onclick="toggleLogout(event)">
+                    <span class="profile-name">${user.name.split(' ')[0]}</span>
+                    <img src="${user.picture || 'https://via.placeholder.com/32'}" alt="${user.name}" class="profile-avatar" onerror="this.src='https://via.placeholder.com/32'">
+                    <div class="profile-dropdown">
+                        <button class="dropdown-item" onclick="logout(event)">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    // Update navbar for logged out user
+    function updateNavbarForLoggedOutUser() {
+        const authSection = document.getElementById('auth-section');
+        if (authSection) {
+            authSection.innerHTML = `
+                <a href="/login" class="nav-link login-btn"><i class="fas fa-sign-in-alt"></i> Login</a>
+            `;
+        }
+    }
+
+    // Update mobile menu for logged in user
+    function updateMobileMenuForLoggedInUser(user) {
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu) {
+            mobileMenu.innerHTML = `
+                <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/analysis"><i class="fas fa-search"></i> Analyze</a></li>
+                <li><a href="/social-feed"><i class="fas fa-newspaper"></i> Social Feed</a></li>
+                <li><a href="/about"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><div class="mobile-profile">
+                    <img src="${user.picture || 'https://via.placeholder.com/50'}" class="mobile-avatar" onerror="this.src='https://via.placeholder.com/50'">
+                    <div class="mobile-info">
+                        <div class="mobile-name">${user.name}</div>
+                        <div class="mobile-email">${user.email}</div>
+                    </div>
+                </div></li>
+                <li><a href="#" onclick="logout(event)" class="mobile-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            `;
+        }
+    }
+
+    // Update mobile menu for logged out user
+    function updateMobileMenuForLoggedOutUser() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu) {
+            mobileMenu.innerHTML = `
+                <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/analysis"><i class="fas fa-search"></i> Analyze</a></li>
+                <li><a href="/social-feed"><i class="fas fa-newspaper"></i> Social Feed</a></li>
+                <li><a href="/about"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><a href="/login" class="nav-link login-btn"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+            `;
+        }
+    }
+
+    // Toggle logout dropdown
+    window.toggleLogout = function(event) {
+        event.stopPropagation();
+        const dropdown = document.querySelector('.profile-dropdown');
+        if (dropdown) {
+            dropdown.classList.toggle('show');
+        }
+    };
+
+    // GLOBAL LOGOUT FUNCTION - Works across all pages
+    window.logout = function(event) {
+        if (event) event.stopPropagation();
+        
+        // Clear localStorage
+        localStorage.removeItem('deepfakeUser');
+        
+        // Update current page UI
+        updateNavbarForLoggedOutUser();
+        updateMobileMenuForLoggedOutUser();
+        
+        // Dispatch custom event for same page
+        window.dispatchEvent(new CustomEvent('loginStateChanged', { 
+            detail: { loggedIn: false } 
+        }));
+        
+        // Show logout message
+        const message = document.createElement('div');
+        message.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ff4444;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            animation: slideIn 0.3s ease;
+        `;
+        message.innerHTML = '<i class="fas fa-check-circle"></i> Logged out successfully!';
+        document.body.appendChild(message);
+        
+        setTimeout(() => {
+            message.remove();
+            window.location.href = '/';
+        }, 1500);
+    };
+</script>
+</body>
+</html>

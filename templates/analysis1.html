@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>AI Deepfake Shield</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='about.css') }}">
+<link rel="icon" href="{{ url_for('static', filename='161966489-jf-initial-letter-vector-logo-icon.jpg') }}">
+
+<style>
+body { font-family: Arial; background:#f0f2f5; display:flex; justify-content:center; padding:40px;}
+.container { background:white; width:520px; padding:20px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+.preview { position:relative; margin-top:15px;}
+.badge { position:absolute; top:10px; left:10px; padding:6px 12px; border-radius:20px; color:white; font-size:14px;}
+.safe { background:green;}
+.fake { background:red;}
+.overlay { position:absolute; top:0; left:0; width:100%; height:100%; backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; color:white; font-size:22px;}
+.spinner { border:4px solid #f3f3f3; border-top:4px solid #1877f2; border-radius:50%; width:30px; height:30px; animation:spin 1s linear infinite; margin:10px auto;}
+@keyframes spin {100%{transform:rotate(360deg)}}
+.progress { height:10px; background:#ddd; border-radius:6px; margin-top:10px;}
+.progress-fill { height:10px; border-radius:6px;}
+button { margin-top:12px; padding:8px 12px; border:none; border-radius:6px; cursor:pointer;}
+.report-btn { background:red; color:white;}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>🛡️ AI Deepfake Shield</h2>
+
+  <input type="file" id="fileInput" accept="image/*,video/*">
+  <button onclick="analyze()">Predict</button>
+
+  <div id="previewArea" class="preview"></div>
+  <div id="resultArea"></div>
+</div>
+
+<audio id="alertSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+
+<script>
+async function analyze() {
+    const file = document.getElementById("fileInput").files[0]; // ✅ FIXED TYPO
+    if (!file) return alert("Please select media.");
+
+    const previewArea = document.getElementById("previewArea");
+    const resultArea = document.getElementById("resultArea");
+
+    // Preview
+    if (file.type.startsWith("video")) {
+        previewArea.innerHTML = `<video width="100%" controls src="${URL.createObjectURL(file)}"></video>`;
+    } else {
+        previewArea.innerHTML = `<img width="100%" src="${URL.createObjectURL(file)}">`;
+    }
+
+    resultArea.innerHTML = `<div class="spinner"></div> AI analyzing...`;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const endpoint = file.type.startsWith("video")
+        ? "http://localhost:8000/predict_video"
+        : "http://localhost:8000/predict_image";
+
+    try {
+        const res = await fetch(endpoint, { method: "POST", body: formData });
+        const data = await res.json();
+
+        let confidence = 0;
+
+        // 🎯 HANDLE IMAGE RESPONSE
+        if (data.confidence !== undefined) {
+            confidence = data.confidence * 100;
+        }
+        // 🎯 HANDLE VIDEO RESPONSE
+        else if (data.mean_probabilities) {
+            confidence = Math.max(data.mean_probabilities.real, data.mean_probabilities.fake) * 100;
+        }
+
+        let badgeClass, badgeText, color;
+
+        if (data.predicted_label === "real") {
+            badgeClass = "safe"; badgeText = "REAL"; color="green";
+        } else {
+            badgeClass = "fake"; badgeText = "FAKE"; color="red";
+            previewArea.innerHTML += `<div class="overlay">🚫 Deepfake Detected</div>`;
+            document.getElementById("alertSound").play();
+        }
+
+        previewArea.innerHTML += `<div class="badge ${badgeClass}">${badgeText}</div>`;
+
+        resultArea.innerHTML = `
+            <b>Confidence Score:</b> ${confidence.toFixed(1)}%
+            <div class="progress">
+                <div class="progress-fill" style="width:${confidence}%; background:${color};"></div>
+            </div>
+        `;
+
+        // 🎥 Frame graph for videos
+        if (data.per_frame_probs) {
+            resultArea.innerHTML += "<br><b>Frame Confidence:</b>";
+            data.per_frame_probs.forEach((p, i) => {
+                const fConf = Math.max(p[0], p[1]) * 100;
+                resultArea.innerHTML += `
+                    <div class="progress">
+                        <div class="progress-fill" style="width:${fConf}%; background:#1877f2;">Frame ${i+1}</div>
+                    </div>`;
+            });
+        }
+
+        // 📄 REPORT DOWNLOAD
+        const report = `
+AI Deepfake Detection Report
+----------------------------
+File: ${file.name}
+Result: ${badgeText}
+Confidence: ${confidence.toFixed(2)}%
+Date: ${new Date().toLocaleString()}
+`;
+
+        const blob = new Blob([report], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+
+        resultArea.innerHTML += `<br><a href="${url}" download="AI_Report.txt"><button>📄 Download Report</button></a>`;
+
+        if (badgeText === "FAKE") {
+            resultArea.innerHTML += `<br><button class="report-btn" onclick="alert('Reported to moderation')">🚨 Report Deepfake</button>`;
+        }
+
+    } catch (err) {
+        console.error(err);
+        resultArea.innerHTML = `<div style="color:red">Server error. Check API.</div>`;
+    }
+}
+</script>
+
+</body>
+</html>
