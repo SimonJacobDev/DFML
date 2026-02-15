@@ -1,11 +1,38 @@
-transformers
-torchaudio
-librosa
-soundfile
-flask
-flask_sqlalchemy
-gunicorn
-torch
-torchvision
-fastapi
-uvicorn
+# Core web frameworks
+flask==2.3.3
+flask_sqlalchemy==3.1.1
+flask_login==0.6.2
+flask_wtf==1.2.1
+flask_bcrypt==1.0.1
+flask_cors==4.0.0
+gunicorn==21.2.0
+fastapi==0.104.1
+uvicorn==0.24.0
+
+# ML/AI libraries
+torch==2.1.0
+torchvision==0.16.0
+torchaudio==2.1.0
+transformers==4.35.0
+librosa==0.10.1
+soundfile==0.12.1
+
+# Image processing
+Pillow==10.1.0
+opencv-python==4.8.1.78
+
+# Data science
+numpy==1.24.3
+pandas==2.1.3
+scikit-learn==1.3.2
+scipy==1.11.4
+
+# Utilities
+python-dotenv==1.0.0
+requests==2.31.0
+tqdm==4.66.1
+gdown==4.7.1
+joblib==1.3.2
+
+# Database (if needed)
+psycopg2-binary==2.9.9
