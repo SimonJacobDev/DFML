@@ -1,3 +1,12 @@
+# Core build tools (must be first)
+setuptools>=70.0.0
+wheel>=0.43.0
+
+# Core web frameworks
+flask==2.3.3
+# ... rest of your file
+
+
 # Core web frameworks
 flask==2.3.3
 flask_sqlalchemy==3.1.1
